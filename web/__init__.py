@@ -1,1 +1,0 @@
-# Calor Systems Web Package

@@ -1,40 +1,10 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+# Ignore everything in root
+/*
 
-# Installer logs
-installer_output/
+# Except these directories
+!/backend/
+!/frontend/
+!/db/
 
-# Database
-*.db
-!db/calor_systems_schema.sql
-
-# Virtual Env
-venv/
-ENV/
-
-# IDE
-.vscode/
-.idea/
-
-# Local configuration
-mcp_config.json
+# Except this file
+!/.gitignore
