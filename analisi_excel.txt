@@ -1,0 +1,292 @@
+============================================================
+FILE: FORTECH
+PATH: Dati_excel/A_FILE GENERALE DA FORTECH_MILANO REPUBBLICA.xlsx
+============================================================
+Righe: 28, Colonne: 67
+COLONNE:
+  - CodicePV
+  - DataContabile
+  - DataInizio
+  - DataFine
+  - StatoGiornata
+  - Corrispettivo Totale
+  - CorrispettivoVerde
+  - PrezzoVerdeFai da te
+  - PrezzoSIVAVerdeFai da te
+  - VolumeVerdeFai da te
+  - ImportoVerdeFai da te
+  - PrezzoVerdeServito
+  - PrezzoSIVAVerdeServito
+  - VolumeVerdeServito
+  - ImportoVerdeServito
+  - PrezzoVerdePrepay
+  - PrezzoSIVAVerdePrepay
+  - VolumeVerdePrepay
+  - ImportoVerdePrepay
+  - CorrispettivoDiesel
+  - PrezzoDieselFai da te
+  - PrezzoSIVADieselFai da te
+  - VolumeDieselFai da te
+  - ImportoDieselFai da te
+  - PrezzoDieselServito
+  - PrezzoSIVADieselServito
+  - VolumeDieselServito
+  - ImportoDieselServito
+  - PrezzoDieselPrepay
+  - PrezzoSIVADieselPrepay
+  - VolumeDieselPrepay
+  - ImportoDieselPrepay
+  - CorrispettivoAdBlue Confezione
+  - PrezzoAdBlue ConfezioneServito
+  - PrezzoSIVAAdBlue ConfezioneServito
+  - QuantitaAdBlue ConfezioneServito
+  - ImportoAdBlue ConfezioneServito
+  - CorrispettivoLIQUIDO RADIATORE
+  - PrezzoLIQUIDO RADIATOREServito
+  - PrezzoSIVALIQUIDO RADIATOREServito
+  - QuantitaLIQUIDO RADIATOREServito
+  - ImportoLIQUIDO RADIATOREServito
+  - CorrispettivoLubrificanti
+  - PrezzoLubrificantiServito
+  - PrezzoSIVALubrificantiServito
+  - QuantitaLubrificantiServito
+  - ImportoLubrificantiServito
+  - CorrispettivoADBLUE
+  - PrezzoADBLUEServito
+  - PrezzoSIVAADBLUEServito
+  - QuantitaADBLUEServito
+  - ImportoADBLUEServito
+  - CorrispettivoLAVAVETRI
+  - PrezzoLAVAVETRIServito
+  - PrezzoSIVALAVAVETRIServito
+  - QuantitaLAVAVETRIServito
+  - ImportoLAVAVETRIServito
+  - CorrispettivoLUBRIFICANTI
+  - PrezzoLUBRIFICANTIServito
+  - PrezzoSIVALUBRIFICANTIServito
+  - QuantitaLUBRIFICANTIServito
+  - ImportoLUBRIFICANTIServito
+  - Fatture Postpagate Totale
+  - Fatture Prepagate Totale
+  - Fatture Immediate Totale
+  - Fatture Differite Totale
+  - Buoni Totale
+
+PRIME 5 RIGHE:
+   CodicePV DataContabile          DataInizio            DataFine StatoGiornata  Corrispettivo Totale  CorrispettivoVerde  PrezzoVerdeFai da te  PrezzoSIVAVerdeFai da te  VolumeVerdeFai da te  ImportoVerdeFai da te  PrezzoVerdeServito  PrezzoSIVAVerdeServito  VolumeVerdeServito  ImportoVerdeServito  PrezzoVerdePrepay  PrezzoSIVAVerdePrepay  VolumeVerdePrepay  ImportoVerdePrepay  CorrispettivoDiesel  PrezzoDieselFai da te  PrezzoSIVADieselFai da te  VolumeDieselFai da te  ImportoDieselFai da te  PrezzoDieselServito  PrezzoSIVADieselServito  VolumeDieselServito  ImportoDieselServito  PrezzoDieselPrepay  PrezzoSIVADieselPrepay  VolumeDieselPrepay  ImportoDieselPrepay  CorrispettivoAdBlue Confezione  PrezzoAdBlue ConfezioneServito  PrezzoSIVAAdBlue ConfezioneServito  QuantitaAdBlue ConfezioneServito  ImportoAdBlue ConfezioneServito  CorrispettivoLIQUIDO RADIATORE  PrezzoLIQUIDO RADIATOREServito  PrezzoSIVALIQUIDO RADIATOREServito  QuantitaLIQUIDO RADIATOREServito  ImportoLIQUIDO RADIATOREServito  CorrispettivoLubrificanti  PrezzoLubrificantiServito  PrezzoSIVALubrificantiServito  QuantitaLubrificantiServito  ImportoLubrificantiServito  CorrispettivoADBLUE  PrezzoADBLUEServito  PrezzoSIVAADBLUEServito  QuantitaADBLUEServito  ImportoADBLUEServito  CorrispettivoLAVAVETRI  PrezzoLAVAVETRIServito  PrezzoSIVALAVAVETRIServito  QuantitaLAVAVETRIServito  ImportoLAVAVETRIServito  CorrispettivoLUBRIFICANTI  PrezzoLUBRIFICANTIServito  PrezzoSIVALUBRIFICANTIServito  QuantitaLUBRIFICANTIServito  ImportoLUBRIFICANTIServito  Fatture Postpagate Totale  Fatture Prepagate Totale  Fatture Immediate Totale  Fatture Differite Totale  Buoni Totale
+0     43809    2026-01-01 2025-12-31 23:59:59 2026-01-01 23:59:59   Rettificata               2156.86             1616.95                   0.0                       0.0                   0.0                    0.0                 0.0                     0.0                 0.0                  0.0              1.739                  1.425             929.78             1616.95               539.91                    0.0                        0.0                    0.0                     0.0                  0.0                      0.0                  0.0                   0.0               1.699                   1.393              393.46               668.49                               0                               0                                 0.0                                 0                                0                               0                               0                                 0.0                                 0                                0                          0                          0                            0.0                            0                           0                    0                    0                      0.0                      0                     0                       0                       0                         0.0                         0                        0                          0                          0                            0.0                            0                           0                          0                         0                     30.33                         0             0
+1     43809    2026-01-02 2026-01-01 23:59:59 2026-01-02 23:59:59   Rettificata               2437.97             1649.74                   0.0                       0.0                   0.0                    0.0                 0.0                     0.0                 0.0                  0.0              1.707                  1.399             966.26             1649.74               788.23                    0.0                        0.0                    0.0                     0.0                  0.0                      0.0                  0.0                   0.0               1.723                   1.412              615.74              1060.99                               0                               0                                 0.0                                 0                                0                               0                               0                                 0.0                                 0                                0                          0                          0                            0.0                            0                           0                    0                    0                      0.0                      0                     0                       0                       0                         0.0                         0                        0                          0                          0                            0.0                            0                           0                          0                         0                     74.93                         0             0
+2     43809    2026-01-03 2026-01-02 23:59:59 2026-01-03 23:59:59   Rettificata               3453.98             2268.76                   0.0                       0.0                   0.0                    0.0                 0.0                     0.0                 0.0                  0.0              1.689                  1.384            1371.26             2316.09              1185.22                    0.0                        0.0                    0.0                     0.0                  0.0                      0.0                  0.0                   0.0               1.749                   1.434              732.85              1281.73                               0                               0                                 0.0                                 0                                0                               0                               0                                 0.0                                 0                                0                          0                          0                            0.0                            0                           0                    0                    0                      0.0                      0                     0                       0                       0                         0.0                         0                        0                          0                          0                            0.0                            0                           0                          0                         0                      0.00                         0             0
+3     43809    2026-01-04 2026-01-03 23:59:59 2026-01-04 23:59:59        Creata               2891.79             2215.84                   0.0                       0.0                   0.0                    0.0                 0.0                     0.0                 0.0                  0.0              1.689                  1.384            1472.35             2486.82               675.95                    0.0                        0.0                    0.0                     0.0                  0.0                      0.0                  0.0                   0.0               1.749                   1.434              452.01               790.56                               0                               0                                 0.0                                 0                                0                               0                               0                                 0.0                                 0                                0                          0                          0                            0.0                            0                           0                    0                    0                      0.0                      0                     0                       0                       0                         0.0                         0                        0                          0                          0                            0.0                            0                           0                          0                         0                    175.37                         0             0
+4     43809    2026-01-05 2026-01-04 23:59:59 2026-01-05 23:59:59   Rettificata               2875.92             2021.95                   0.0                       0.0                   0.0                    0.0                 0.0                     0.0                 0.0                  0.0              1.689                  1.384            1203.09             2031.98               853.97                    0.0                        0.0                    0.0                     0.0                  0.0                      0.0                  0.0                   0.0               1.749                   1.434              745.44              1303.77                               0                               0                                 0.0                                 0                                0                               0                               0                                 0.0                                 0                                0                          0                          0                            0.0                            0                           0                    0                    0                      0.0                      0                     0                       0                       0                         0.0                         0                        0                          0                          0                            0.0                            0                           0                          0                         0                    318.57                         0             0
+
+
+============================================================
+FILE: AS400
+PATH: Dati_excel/1_CONTROLLO CONTANTI DA AS400_GIALLO.xlsx
+============================================================
+Righe: 217, Colonne: 46
+COLONNE:
+  - Opz
+  - Stato
+  - Note m.
+  - Documento//Data
+  - Documento//Tipo
+  - Documento//Numero
+  - Registrazione//Data
+  - Registrazione//Tipo
+  - Registrazione//Numero
+  - Descrizione
+  - Scadenza
+  - Centro di Costo
+  - Importo
+  - Segno
+  - Val
+  - Importo val.
+  - Stato.1
+  - Pagam.
+  - Tipo pag.
+  - N. rata
+  - Grado soll.
+  - Grado da soll.
+  - Legale
+  - C/Costo
+  - Descrizione 2
+  - Data Val.
+  - Commessa
+  - Cambio
+  - -
+  - Linea
+  - Agente
+  - Assegno
+  - Dt.sol.
+  - Nr.sol.
+  - Blocco pagamenti
+  - Codice CUP
+  - Codice Cig
+  - Stato invio
+  - Partita
+  - Eff.def.
+  - Numero effetto
+  - Data effetto
+  - Nro documento
+  - Cee
+  - Allegati
+  - -.1
+
+PRIME 5 RIGHE:
+   Opz  Stato  Note m.  Documento//Data  Documento//Tipo  Documento//Numero Registrazione//Data  Registrazione//Tipo  Registrazione//Numero              Descrizione   Scadenza Centro di Costo  Importo Segno  Val  Importo val.  Stato.1  Pagam.  Tipo pag.  N. rata  Grado soll.  Grado da soll.  Legale C/Costo  Descrizione 2  Data Val.  Commessa  Cambio   -  Linea  Agente  Assegno  Dt.sol.  Nr.sol.  Blocco pagamenti  Codice CUP  Codice Cig  Stato invio                           Partita  Eff.def.  Numero effetto  Data effetto  Nro documento  Cee  Allegati  -.1
+0  NaN    NaN      NaN              NaN              NaN                NaN          2026-01-14                  3.0               148193.0            Accredito Pos 2026-01-14           CP001   449.82     A  NaN           NaN      NaN    99.0        NaN      NaN          NaN             NaN     NaN   CP001            NaN        NaN       NaN     NaN NaN    NaN     NaN      NaN      NaN      0.0               NaN         NaN         NaN          NaN  KY-C   991000/2026/01/14--048193       NaN             NaN           NaN            NaN  NaN       NaN  CdC
+1  NaN    NaN      NaN              NaN              NaN                NaN                 NaT                  NaN                    NaN  PART.14/01/2026--048193        NaT             NaN   449.82     A  NaN           NaN      NaN     NaN        NaN      NaN          NaN             NaN     NaN     NaN            NaN        NaN       NaN     NaN NaN    NaN     NaN      NaN      NaN      NaN               NaN         NaN         NaN          NaN  KY-C   991000/2026/01/14--048193       NaN             NaN           NaN            NaN  NaN       NaN  CdC
+2  NaN    NaN      NaN              NaN              NaN                NaN          2026-01-14                  3.0               148197.0            Accredito Pos 2026-01-14           CP001    95.14     A  NaN           NaN      NaN    99.0        NaN      NaN          NaN             NaN     NaN   CP001            NaN        NaN       NaN     NaN NaN    NaN     NaN      NaN      NaN      0.0               NaN         NaN         NaN          NaN  KY-C   991000/2026/01/14--048197       NaN             NaN           NaN            NaN  NaN       NaN  CdC
+3  NaN    NaN      NaN              NaN              NaN                NaN                 NaT                  NaN                    NaN  PART.14/01/2026--048197        NaT             NaN    95.14     A  NaN           NaN      NaN     NaN        NaN      NaN          NaN             NaN     NaN     NaN            NaN        NaN       NaN     NaN NaN    NaN     NaN      NaN      NaN      NaN               NaN         NaN         NaN          NaN  KY-C   991000/2026/01/14--048197       NaN             NaN           NaN            NaN  NaN       NaN  CdC
+4  NaN    NaN      NaN              NaN              NaN                NaN          2026-01-14                  3.0               148198.0            Accredito Pos 2026-01-14           CP001   278.53     A  NaN           NaN      NaN    99.0        NaN      NaN          NaN             NaN     NaN   CP001            NaN        NaN       NaN     NaN NaN    NaN     NaN      NaN      NaN      0.0               NaN         NaN         NaN          NaN  KY-C   991000/2026/01/14--048198       NaN             NaN           NaN            NaN  NaN       NaN  CdC
+
+
+============================================================
+FILE: NUMIA
+PATH: Dati_excel/2_CONTROLLO CARTE BANCARIE DA NUMIA_VERDE.xlsx
+============================================================
+Righe: 128, Colonne: 17
+COLONNE:
+  - Unnamed: 0
+  - Unnamed: 1
+  - Unnamed: 2
+  - Unnamed: 3
+  - Unnamed: 4
+  - Unnamed: 5
+  - Unnamed: 6
+  - Unnamed: 7
+  - Unnamed: 8
+  - Unnamed: 9
+  - Unnamed: 10
+  - Unnamed: 11
+  - Unnamed: 12
+  - Unnamed: 13
+  - Unnamed: 14
+  - Unnamed: 15
+  - Unnamed: 16
+
+PRIME 5 RIGHE:
+                                                     Unnamed: 0             Unnamed: 1           Unnamed: 2 Unnamed: 3    Unnamed: 4        Unnamed: 5          Unnamed: 6                   Unnamed: 7        Unnamed: 8        Unnamed: 9    Unnamed: 10       Unnamed: 11   Unnamed: 12         Unnamed: 13      Unnamed: 14         Unnamed: 15    Unnamed: 16
+0  Lista transazioni dal 15/01/26 00:00:00 al 15/01/26 23:59:59                    NaN                  NaN        NaN           NaN               NaN                 NaN                          NaN               NaN               NaN            NaN               NaN           NaN                 NaN              NaN                 NaN            NaN
+1                                                    Data e ora  Codice autorizzazione         Numero carta    Importo      Circuito  Tipo transazione    Stato operazione  Importo in valuta originale  Valuta originale  Importo Cashback  Punto vendita  ID Punto vendita           MID  ID Terminale / TML  Alias Terminale      ID Transazione  Codice ordine
+2                                           2026-01-15 23:39:24                 929023  535400xxxxxxxxx5542      17.01    MASTERCARD          Acquisto  Acquisto approvato                          NaN              Euro               NaN             IP      344506900102       7971551            40045538  REPUBBLICA SELF  569374765708595524            NaN
+3                                           2026-01-15 23:36:46                 NT5WCS  535561xxxxxxxxx2361      50.05    MASTERCARD          Acquisto  Acquisto approvato                          NaN              Euro               NaN             IP      344506900102       7971551            40045538  REPUBBLICA SELF  569374607303576634            NaN
+4                                           2026-01-15 23:31:33                 060617  306920xxxxxxxxx5877      50.16  PAGOBANCOMAT          Acquisto  Acquisto approvato                          NaN              Euro               NaN             IP      344506900102  344506900102            40045538  REPUBBLICA SELF  569374294014537044            NaN
+
+
+============================================================
+FILE: IP_CARTE
+PATH: Dati_excel/3_CONTROLLO CARTE PETROLIFERE DA IPORTAL_AZZURRO.xlsx
+============================================================
+Righe: 137, Colonne: 14
+COLONNE:
+  - TRANSAZIONI FUELCARD RIMBORSATE
+  - Unnamed: 1
+  - Unnamed: 2
+  - Unnamed: 3
+  - Unnamed: 4
+  - Unnamed: 5
+  - Unnamed: 6
+  - Unnamed: 7
+  - Unnamed: 8
+  - Unnamed: 9
+  - Unnamed: 10
+  - Unnamed: 11
+  - Unnamed: 12
+  - Unnamed: 13
+
+PRIME 5 RIGHE:
+  TRANSAZIONI FUELCARD RIMBORSATE Unnamed: 1        Unnamed: 2       Unnamed: 3 Unnamed: 4  Unnamed: 5    Unnamed: 6              Unnamed: 7 Unnamed: 8 Unnamed: 9 Unnamed: 10 Unnamed: 11     Unnamed: 12   Unnamed: 13
+0                         Gestore         PV  Data\noperazione  Ora\noperazione   Circuito  Cod. Prod.      Prodotto  Riferimento\nScontrino   Quantità     Prezzo     Importo       Segno  Numero Fattura  Data Fattura
+1                          181706      40297        15/01/2026         10:50:00        DKV         202     SsPb self                00005543      29.44      1.699       50.02           +      F402971997    16/01/2026
+2                          181706      40297        15/01/2026         13:29:00        DKV         203  Gasolio Self                00005544      16.78      1.789       30.02           +      F402971997    16/01/2026
+3                          181706      40297        15/01/2026         09:06:00  CM IPPLUS         203  Gasolio Self                00005542      49.47      1.789        88.5           +      F402971997    16/01/2026
+4                          181706      40297        15/01/2026         18:58:00  CM IPPLUS         203  Gasolio Self                00005545      53.37      1.799       96.01           +      F402971997    16/01/2026
+
+
+============================================================
+FILE: IP_BUONI
+PATH: Dati_excel/4_CONTROLLO BUONI IP DA IPORTAL_ROSSO.xlsx
+============================================================
+Righe: 14, Colonne: 43
+COLONNE:
+  - DETTAGLIO TRANSAZIONI BUONI
+  - Unnamed: 1
+  - Unnamed: 2
+  - Unnamed: 3
+  - Unnamed: 4
+  - Unnamed: 5
+  - Unnamed: 6
+  - Unnamed: 7
+  - Unnamed: 8
+  - Unnamed: 9
+  - Unnamed: 10
+  - Unnamed: 11
+  - Unnamed: 12
+  - Unnamed: 13
+  - Unnamed: 14
+  - Unnamed: 15
+  - Unnamed: 16
+  - Unnamed: 17
+  - Unnamed: 18
+  - Unnamed: 19
+  - Unnamed: 20
+  - Unnamed: 21
+  - Unnamed: 22
+  - Unnamed: 23
+  - Unnamed: 24
+  - Unnamed: 25
+  - Unnamed: 26
+  - Unnamed: 27
+  - Unnamed: 28
+  - Unnamed: 29
+  - Unnamed: 30
+  - Unnamed: 31
+  - Unnamed: 32
+  - Unnamed: 33
+  - Unnamed: 34
+  - Unnamed: 35
+  - Unnamed: 36
+  - Unnamed: 37
+  - Unnamed: 38
+  - Unnamed: 39
+  - Unnamed: 40
+  - Unnamed: 41
+  - Unnamed: 42
+
+PRIME 5 RIGHE:
+  DETTAGLIO TRANSAZIONI BUONI      Unnamed: 1                Unnamed: 2        Unnamed: 3                     Unnamed: 4    Unnamed: 5                     Unnamed: 6          Unnamed: 7 Unnamed: 8        Unnamed: 9 Unnamed: 10 Unnamed: 11     Unnamed: 12      Unnamed: 13     Unnamed: 14 Unnamed: 15 Unnamed: 16                  Unnamed: 17          Unnamed: 18       Unnamed: 19 Unnamed: 20 Unnamed: 21 Unnamed: 22   Unnamed: 23    Unnamed: 24 Unnamed: 25 Unnamed: 26      Unnamed: 27          Unnamed: 28 Unnamed: 29 Unnamed: 30 Unnamed: 31                               Unnamed: 32        Unnamed: 33            Unnamed: 34         Unnamed: 35 Unnamed: 36 Unnamed: 37         Unnamed: 38  Unnamed: 39              Unnamed: 40     Unnamed: 41 Unnamed: 42
+0             Data\ndocumento  Codice cliente  Ragione sociale\ncliente  Numero documento  Numero documento\nriferimento  Codice\nRete  Data registrazione\ndocumento           Indirizzo        Cap          Localita   Provincia     Nazione  Importo totale  Data operazione  Ora operazione   Terminale   Esercente        Descrizione esercente                  Pan     Serial number     Importo    Quantita    Prodotto  Prezzo unit.  Punto vendita      Valuta   Auth code  Codice prodotto  Ambiente\noperativo     Gestore   Esercizio     Societa  Giorno acquisizione\ndocumento contabile  Ora\nacquisizione  Codice\nconvenzionato  Nome convenzionato      Canale  Numero log  Numero\noperazione  Stato buono  Numero conto\nfornitore  Codice site TE      Flusso
+1                  2026-01-16      0000181706         CALOR SYSTEMS SRL        3000028329                            NaN           643                     2026-01-16  VIA PER GRASSOBBIO      24052  AZZANO SAN PAOLO          BG          IT          411.61       2026-01-15        23:56:44    54380960  0000043809  MILANO - DELLA REPUBBLICA 5  7000981212670459772  7010200010494429          34       20.13        SsPb         1.689     0000043809         EUR      654049              002                   In  0000181706        2026        1010                                2026-01-16           23:39:34             0000181706   CALOR SYSTEMS SRL         NaN         000                 000           00                      NaN             NaN        NEXI
+2                  2026-01-16      0000181706         CALOR SYSTEMS SRL        3000028329                            NaN           643                     2026-01-16  VIA PER GRASSOBBIO      24052  AZZANO SAN PAOLO          BG          IT          411.61       2026-01-15        23:53:05    54380960  0000043809  MILANO - DELLA REPUBBLICA 5  7000981760107870557  7010200010494430       17.63       10.44        SsPb         1.689     0000043809         EUR      654039              002                   In  0000181706        2026        1010                                2026-01-16           23:39:34             0000181706   CALOR SYSTEMS SRL         NaN         000                 000           00                      NaN             NaN        NEXI
+3                  2026-01-16      0000181706         CALOR SYSTEMS SRL        3000028329                            NaN           643                     2026-01-16  VIA PER GRASSOBBIO      24052  AZZANO SAN PAOLO          BG          IT          411.61       2026-01-15        18:01:58    54395860  0000043958   BOZZOLO - GIUSEPPINA 7/BIS  7000981767856369640  7010200012593330          50       28.59     Gasolio         1.749     0000043958         EUR      648120              003                   In  0000181706        2026        1010                                2026-01-16           23:39:34             0000181706   CALOR SYSTEMS SRL         NaN         000                 000           00                      NaN             NaN        NEXI
+4                  2026-01-16      0000181706         CALOR SYSTEMS SRL        3000028329                            NaN           000                     2026-01-16  VIA PER GRASSOBBIO      24052  AZZANO SAN PAOLO          BG          IT          411.61       2026-01-15        17:25:02    54284060  0000042840     ROVETTA - VIA FANTONI 53  7000982372594802504  9150600015152516          10        6.25        SsPb         1.599     0000042840         EUR      646141              002                   In  0000181706        2026        1010                                2026-01-16           23:39:34                    NaN                 NaN         NaN         000                 000           00                      NaN             NaN        NEXI
+
+
+============================================================
+FILE: SATISPAY
+PATH: Dati_excel/5_CONTROLLO SATISPAY DA PORTALE SATISPAY_GRIGIO.xlsx
+============================================================
+Righe: 6, Colonne: 9
+COLONNE:
+  - id transazione
+  - data transazione
+  - negozio
+  - codice negozio
+  - importo totale
+  - totale commissioni
+  - tipo transazione
+  - codice transazione
+  - id gruppo
+
+PRIME 5 RIGHE:
+                         id transazione        data transazione negozio codice negozio  importo totale  totale commissioni tipo transazione  codice transazione                             id gruppo
+0  019bc3be-8e61-7af8-836d-a7620b38a7d4 2026-01-15 23:20:04.072      ip   43809 - OPT1            9.88                0.03      TO_BUSINESS                   0  019bc3bd-bdf6-7500-989e-92ec7f4b67c3
+1  019bc3a0-4634-72d3-826d-b2a422ed28b8 2026-01-15 22:46:59.518      ip   48979 - OPT1            8.66                0.03      TO_BUSINESS                   0  019bc39f-0fb5-7748-a82c-a0c2f363e841
+2  019bc269-839b-72fa-b9db-c021d24d8f9b 2026-01-15 17:07:33.540      ip   43695 - OPT1           30.00                0.09      TO_BUSINESS                   0  019bc268-9208-7ff1-8396-1abfd117e034
+3  019bc140-401f-78f4-8711-f734f034f58b 2026-01-15 11:42:52.072      ip     46273-OPT1           29.56                0.09      TO_BUSINESS                   0  019bc13f-175a-79f6-94cb-dd457f254cf2
+4  019bc11b-9ce4-7d8c-9d4d-cdc312db86d8 2026-01-15 11:02:50.987      ip   43695 - OPT1           50.00                0.15      TO_BUSINESS                   0  019bc11a-4924-7c73-85c5-6f726b1360ab
+
+

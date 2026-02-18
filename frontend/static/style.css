@@ -1,0 +1,380 @@
+/* ═══════════════════════════════════════════════════════════════
+   CALOR SYSTEMS — Web App Style (Desktop App Replica)
+   Matches CustomTkinter "Dark" theme with "blue" accents.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Reset & Base ─── */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    /* CustomTkinter Dark Theme Colors */
+    --bg-window: #242424;
+    /* Main window background */
+    --bg-frame: #2b2b2b;
+    /* Frame/Card background */
+    --text-main: #dce4ee;
+    /* Main text */
+    --text-dim: #aaaaaa;
+    /* Subtitle/Description */
+    --btn-primary: #3a7ebf;
+    /* Blue button */
+    --btn-hover: #325882;
+    /* Darker blue hover */
+    --btn-danger: #c0392b;
+    /* Red button */
+    --btn-danger-hover: #922b21;
+    --border: #3e3e3e;
+    /* Subtle borders */
+
+    /* Functional Colors */
+    --status-ok: #2ecc71;
+    --status-warn: #f39c12;
+    --status-err: #e74c3c;
+    --status-info: #3498db;
+
+    --font-stack: "Segoe UI", "Inter", sans-serif;
+    --radius: 6px;
+    /* Standard CTK corner radius */
+    --radius-btn: 8px;
+}
+
+html,
+body {
+    height: 100%;
+    font-family: var(--font-stack);
+    background: var(--bg-window);
+    color: var(--text-main);
+    overflow: hidden;
+    /* App-like feel */
+}
+
+/* ─── App Container (The "Window") ─── */
+#app-container {
+    display: grid;
+    grid-template-rows: 1fr;
+    height: 100vh;
+    width: 100%;
+    position: relative;
+}
+
+/* ─── Frames (Views) ─── */
+.frame {
+    display: none;
+    /* Hidden by default */
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    padding: 2rem;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.frame.active {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ─── Common Typography ─── */
+h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+p.subtitle {
+    font-size: 15px;
+    color: var(--text-dim);
+    margin-bottom: 1.5rem;
+}
+
+p.description {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    text-align: center;
+    max-width: 500px;
+    margin: 0 auto 2rem;
+}
+
+/* ─── Components ─── */
+
+/* Buttons */
+.ctk-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--btn-primary);
+    color: var(--text-main);
+    font-family: var(--font-stack);
+    font-size: 15px;
+    font-weight: 600;
+    padding: 0 1.5rem;
+    height: 40px;
+    border: none;
+    border-radius: var(--radius-btn);
+    cursor: pointer;
+    transition: background 0.15s;
+    text-decoration: none;
+}
+
+.ctk-button:hover {
+    background: var(--btn-hover);
+}
+
+.ctk-button:disabled {
+    background: #555;
+    color: #888;
+    cursor: not-allowed;
+}
+
+.ctk-button.danger {
+    background: var(--btn-danger);
+}
+
+.ctk-button.danger:hover {
+    background: var(--btn-danger-hover);
+}
+
+.ctk-button.outline {
+    background: transparent;
+    border: 2px solid #555;
+    color: var(--text-dim);
+}
+
+.ctk-button.outline:hover {
+    border-color: var(--text-main);
+    color: var(--text-main);
+}
+
+/* Scrollable Areas */
+.scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    background: transparent;
+    border-radius: var(--radius);
+    padding-right: 5px;
+    /* Space for scrollbar */
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 16px;
+    /* High visibility */
+}
+
+::-webkit-scrollbar-track {
+    background: #202020;
+    border-left: 1px solid #333;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #555;
+    border: 3px solid #202020;
+    /* Creates padding around thumb */
+    border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #3a7ebf;
+    /* Blue on hover for interaction feedback */
+}
+
+/* ─── Floating Scroll Buttons ─── */
+.fab-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 999;
+}
+
+.fab-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--btn-primary);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, background 0.2s, opacity 0.2s;
+    opacity: 0.7;
+}
+
+.fab-btn:hover {
+    transform: translateY(-2px);
+    background: var(--btn-hover);
+    opacity: 1;
+}
+
+.fab-btn:active {
+    transform: translateY(0);
+}
+
+/* ─── Welcome Frame Specifics ─── */
+#WelcomeFrame {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.welcome-icon {
+    font-size: 52px;
+    margin-bottom: 0.5rem;
+}
+
+/* ─── Results Frame Specifics ─── */
+#ResultsFrame .header {
+    flex: 0 0 auto;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+#ResultsFrame .summary-label {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 1rem;
+}
+
+.results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 2rem;
+}
+
+/* Result Card */
+.result-card {
+    background: var(--bg-frame);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    border: 1px solid transparent;
+}
+
+.result-card:hover {
+    border-color: #444;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.date-label {
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-label {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* Card Detail Lines */
+.card-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.detail-row {
+    display: flex;
+    font-size: 12px;
+    color: var(--text-dim);
+    justify-content: space-between;
+    /* If we want right-align */
+}
+
+.detail-text {
+    flex: 1;
+}
+
+.detail-status {
+    font-weight: 600;
+    margin-right: 8px;
+}
+
+/* Status Colors */
+.color-ok {
+    color: var(--status-ok);
+}
+
+.color-warn {
+    color: var(--status-warn);
+}
+
+.color-err {
+    color: var(--status-err);
+}
+
+.color-info {
+    color: var(--status-info);
+}
+
+.color-gray {
+    color: #95a5a6;
+}
+
+/* ─── Footer Controls ─── */
+.footer-controls {
+    flex: 0 0 auto;
+    padding-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+/* ─── Loading / Spinner ─── */
+.loader {
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    border-top: 3px solid var(--btn-primary);
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

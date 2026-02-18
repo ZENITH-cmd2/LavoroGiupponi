@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>Calor Systems</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <div id="app-container">
+
+        <!-- ══════════════════════════════════════════════════ -->
+        <!-- FRAME: WELCOME (Home)                              -->
+        <!-- ══════════════════════════════════════════════════ -->
+        <div id="WelcomeFrame" class="frame active">
+            <div class="welcome-icon">⚙️</div>
+
+            <h1>Calor Systems</h1>
+            <p class="subtitle">Sistema di Riconciliazione Dati – DEMO</p>
+
+            <p class="description">
+                Questa è una versione dimostrativa del software.<br>
+                Premi il pulsante qui sotto per iniziare:<br>
+                caricherai i tuoi file Excel e il sistema<br>
+                verificherà automaticamente la quadratura dei conti.
+            </p>
+
+            <button class="ctk-button" id="btnStart"
+                style="width: 260px; height: 48px; border-radius: 12px; font-size: 16px;">
+                ▶ INIZIA IL TEST
+            </button>
+            <br><br>
+            <!-- Aggiunta: Link diretto ai risultati se presenti dati -->
+            <a href="#" id="lnkSkip" style="color: #555; font-size: 13px; text-decoration: none;">(Vedi risultati
+                precedenti)</a>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════ -->
+        <!-- FRAME: INPUT (File Selection)                      -->
+        <!-- ══════════════════════════════════════════════════ -->
+        <div id="InputFrame" class="frame">
+            <h1 style="margin-bottom: 0.5rem;">📂 Caricamento Dati</h1>
+            <p class="subtitle" style="margin-bottom: 1.5rem;">Seleziona i file Excel dei punti vendita che vuoi
+                analizzare.</p>
+
+            <!-- File List Container -->
+            <div class="scroll-area"
+                style="background: #2b2b2b; border: 1px solid #3e3e3e; margin-bottom: 1.5rem; display: flex; flex-direction: column;">
+                <div id="file-list-header"
+                    style="padding: 10px 15px; border-bottom: 1px solid #3e3e3e; font-size: 13px; font-weight: bold; color: var(--text-dim);">
+                    File selezionati (0)
+                </div>
+                <div id="file-list" style="flex: 1; overflow-y: auto; padding: 10px;">
+                    <!-- Items go here -->
+                    <div id="file-placeholder" style="text-align: center; color: #777; padding: 2rem;">
+                        Nessun file ancora selezionato.<br>
+                        Clicca «Aggiungi File» per iniziare.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div style="display: flex; gap: 10px; margin-bottom: 1.5rem;">
+                <input type="file" id="fileInput" multiple accept=".xlsx, .xls" style="display: none;">
+
+                <button class="ctk-button" id="btnAddFile" style="width: 170px;">
+                    ➕ Aggiungi File
+                </button>
+
+                <button class="ctk-button danger" id="btnClearFiles" style="width: 170px;">
+                    🗑 Svuota Lista
+                </button>
+
+                <div style="flex: 1;"></div>
+
+                <button class="ctk-button" id="btnUpload" disabled style="width: 170px;">
+                    Avanti ➡
+                </button>
+            </div>
+
+            <button class="ctk-button outline" id="btnBackInput" style="width: 100px; border: none;">
+                ← Indietro
+            </button>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════ -->
+        <!-- FRAME: PROCESSING                                  -->
+        <!-- ══════════════════════════════════════════════════ -->
+        <div id="ProcessingFrame" class="frame" style="justify-content: center; align-items: center;">
+            <h1 style="margin-bottom: 2rem;">⏳ Elaborazione in corso…</h1>
+            <p id="proc-phase" style="color: #3498db; margin-bottom: 1rem;">Caricamento file al server…</p>
+
+            <!-- Indeterminate Progress -->
+            <div
+                style="width: 500px; height: 16px; background: #3e3e3e; border-radius: 8px; overflow: hidden; margin-bottom: 1rem; position: relative;">
+                <div id="proc-bar"
+                    style="width: 30%; height: 100%; background: #3a7ebf; position: absolute; left: 0; animation: shimmer 2s infinite linear;">
+                </div>
+            </div>
+
+            <p id="proc-pct" style="font-weight: bold; height: 20px;"></p>
+
+            <div id="proc-log"
+                style="width: 500px; height: 150px; background: #1a1a1a; color: #ccc; font-family: Consolas, monospace; font-size: 11px; padding: 10px; margin-top: 20px; border-radius: 8px; overflow-y: auto;">
+                <!-- Logs -->
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════ -->
+        <!-- FRAME: RESULTS                                     -->
+        <!-- ══════════════════════════════════════════════════ -->
+        <div id="ResultsFrame" class="frame">
+            <div class="header">
+                <h1>📊 Risultati Analisi</h1>
+                <p class="summary-label" id="res-summary">Caricamento risultati…</p>
+            </div>
+
+            <div class="scroll-area">
+                <div id="cards-container" class="results-list">
+                    <!-- Cards injected here -->
+                </div>
+            </div>
+
+            <div class="footer-controls">
+                <button class="ctk-button" id="btnHome" style="width: 200px;">
+                    🏠 Torna alla Home
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Floating Navigation Buttons -->
+    <div class="fab-container">
+        <button class="fab-btn" id="btnScrollUp" title="Torna su">↑</button>
+        <button class="fab-btn" id="btnScrollDown" title="Vai giù">↓</button>
+    </div>
+
+    <!-- JS -->
+    <script src="/static/app.js"></script>
+
+    <style>
+        @keyframes shimmer {
+            0% {
+                left: -30%;
+            }
+
+            100% {
+                left: 100%;
+            }
+        }
+    </style>
+</body>
+
+</html>
