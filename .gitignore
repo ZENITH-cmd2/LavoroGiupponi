@@ -8,3 +8,5 @@
 
 # Except this file
 !/.gitignore
+!/Procfile
+!/DEPLOY.md
