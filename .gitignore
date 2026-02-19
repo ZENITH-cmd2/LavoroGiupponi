@@ -10,3 +10,5 @@
 !/.gitignore
 !/Procfile
 !/DEPLOY.md
+!/DEPLOY_VERCEL.md
+!/vercel.json
