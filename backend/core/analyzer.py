@@ -2,7 +2,7 @@
 import sqlite3
 import pandas as pd
 from core.database import Database
-from core.reconciliation import riconcilia_giornata
+from core.reconciliation import riconcilia_giornata, riconcilia_contanti_multi_giorno
 
 class Analyzer:
     def __init__(self, db_instance: Database):
@@ -11,8 +11,10 @@ class Analyzer:
     def run_analysis(self, progress_callback=None):
         """
         Runs analysis for all dates found in Fortech Master data.
-        Iterates through each plant and date combination.
-        Saves results to 'report_riconciliazioni' table.
+        
+        Two-pass approach:
+        1. Standard per-day reconciliation for all categories
+        2. Multi-day contanti reconciliation per impianto (overrides contanti results)
         """
         conn = self.db.get_connection()
         conn.row_factory = sqlite3.Row
@@ -21,7 +23,6 @@ class Analyzer:
             cur = conn.cursor()
             
             # 1. Identify what to analyze based on Fortech Master Data
-            # This drives the process. If we have theoretical data, we reconcile.
             cur.execute("""
                 SELECT DISTINCT data_contabile, impianto_id 
                 FROM import_fortech_master 
@@ -32,12 +33,12 @@ class Analyzer:
             total_tasks = len(tasks)
             results = []
             
+            # ── Pass 1: Standard per-day reconciliation ──
             for index, task in enumerate(tasks):
                 date_str = task['data_contabile']
                 impianto_id = task['impianto_id']
                 
                 if progress_callback:
-                    # Fetch plant name for better log
                     cur.execute("SELECT nome_impianto FROM impianti WHERE id = ?", (impianto_id,))
                     plant_row = cur.fetchone()
                     plant_name = plant_row['nome_impianto'] if plant_row else f"ID {impianto_id}"
@@ -52,6 +53,7 @@ class Analyzer:
                 numia_records = self._fetch_numia(conn, date_str, impianto_id)
                 ip_carte, ip_buoni = self._fetch_ip(conn, date_str, impianto_id)
                 satispay_records = self._fetch_satispay(conn, date_str, impianto_id)
+                crediti_records = self._fetch_crediti(conn, date_str, impianto_id)
                 
                 # Run logic
                 res_dict = riconcilia_giornata(
@@ -60,12 +62,16 @@ class Analyzer:
                     numia_records,
                     ip_carte,
                     ip_buoni,
-                    satispay_records
+                    satispay_records,
+                    crediti_records
                 )
                 
                 # Save to DB
                 self._save_result(conn, res_dict, impianto_id)
                 results.append(res_dict)
+
+            # ── Pass 2: Multi-day contanti reconciliation per impianto ──
+            self._run_contanti_multi_giorno(conn, progress_callback)
 
             conn.commit()
             
@@ -80,6 +86,79 @@ class Analyzer:
             raise e
         finally:
             conn.close()
+
+    def _run_contanti_multi_giorno(self, conn, progress_callback=None):
+        """
+        Esegue la riconciliazione contanti multi-giorno per ogni impianto.
+        Raggruppa tutti i giorni Fortech per impianto e li confronta con
+        tutti i versamenti AS400 del periodo, sovrascrivendo i risultati
+        contanti prodotti dalla Pass 1.
+        """
+        cur = conn.cursor()
+        
+        # Trova tutti gli impianti con dati Fortech
+        cur.execute("SELECT DISTINCT impianto_id FROM import_fortech_master")
+        impianti = [row['impianto_id'] for row in cur.fetchall()]
+        
+        for impianto_id in impianti:
+            # Fetch tutti i giorni Fortech per questo impianto
+            cur.execute("""
+                SELECT data_contabile, incasso_contanti_teorico 
+                FROM import_fortech_master 
+                WHERE impianto_id = ?
+                ORDER BY data_contabile
+            """, (impianto_id,))
+            fortech_rows = [dict(r) for r in cur.fetchall()]
+            
+            if not fortech_rows:
+                continue
+            
+            # Determina il range date
+            date_fortech = [r['data_contabile'] for r in fortech_rows if r['data_contabile']]
+            if not date_fortech:
+                continue
+            data_min = min(date_fortech)
+            data_max = max(date_fortech)
+            
+            # Fetch tutti i versamenti AS400 nel periodo allargato
+            cur.execute("""
+                SELECT * FROM verifica_contanti_as400 
+                WHERE impianto_id = ?
+                AND data_registrazione BETWEEN date(?, '-2 days') AND date(?, '+7 days')
+                ORDER BY data_registrazione
+            """, (impianto_id, data_min, data_max))
+            as400_all = [dict(r) for r in cur.fetchall()]
+            
+            # Esegui riconciliazione multi-giorno
+            risultati_multi = riconcilia_contanti_multi_giorno(
+                fortech_rows, as400_all, impianto_id=str(impianto_id)
+            )
+            
+            # Sovrascrivi i risultati contanti nella tabella report
+            for ris in risultati_multi:
+                cur.execute("""
+                    DELETE FROM report_riconciliazioni 
+                    WHERE impianto_id = ? AND data_riferimento = ? AND categoria = 'contanti'
+                """, (impianto_id, ris.data))
+                
+                pct = 0.0
+                if ris.valore_teorico != 0:
+                    pct = (ris.differenza / ris.valore_teorico) * 100
+                
+                cur.execute("""
+                    INSERT INTO report_riconciliazioni (
+                        impianto_id, data_riferimento, categoria,
+                        valore_fortech, valore_reale, differenza, percentuale_scostamento,
+                        stato, tipo_anomalia, note, risolto
+                    ) VALUES (?, ?, 'contanti', ?, ?, ?, ?, ?, ?, ?, 0)
+                """, (
+                    impianto_id, ris.data,
+                    ris.valore_teorico, ris.valore_reale, ris.differenza,
+                    round(pct, 2), ris.stato.value,
+                    ris.match_info.get('tipo_match', '') if ris.match_info else None,
+                    ris.note
+                ))
+
 
     def _fetch_fortech(self, conn, date_str, impianto_id):
         cur = conn.cursor()
@@ -127,6 +206,16 @@ class Analyzer:
             WHERE data_transazione LIKE ? 
             AND impianto_id = ?
         """, (f"{date_str}%", impianto_id))
+        return [dict(row) for row in cur.fetchall()]
+
+    def _fetch_crediti(self, conn, date_str, impianto_id):
+        """Fetch Fattura1Click credit records for reconciliation."""
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT * FROM verifica_credito_clienti 
+            WHERE data_erogazione = ? 
+            AND impianto_id = ?
+        """, (date_str, impianto_id))
         return [dict(row) for row in cur.fetchall()]
 
     def _save_result(self, conn, res, impianto_id):

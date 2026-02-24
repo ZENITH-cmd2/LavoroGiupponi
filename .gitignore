@@ -1,14 +1,37 @@
-# Ignore everything in root
-/*
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
 
-# Except these directories
-!/backend/
-!/frontend/
-!/db/
+# Virtual environments
+venv/
+.venv/
+backend/.venv/
+.env
 
-# Except this file
-!/.gitignore
-!/Procfile
-!/DEPLOY.md
-!/DEPLOY_VERCEL.md
-!/vercel.json
+# Database
+db/*.db
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test temp files
+backend/test_output.txt
+backend/test_result.txt
+backend/test_results.txt
+backend/test_legacy_result.txt
+
+# Data files (local only)
+Dati_excel/
+
+# Gemini
+.gemini/

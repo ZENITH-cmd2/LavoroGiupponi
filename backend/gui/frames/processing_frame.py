@@ -118,7 +118,9 @@ class ProcessingFrame(ctk.CTkFrame):
     def _worker(self):
         try:
             files = self.controller.shared_data.get("files", [])
-            root_path = os.getcwd()
+            # Use an absolute path based on the file's current location to ensure the 'db' folder is always found.
+            # ProcessingFrame is in backend/gui/frames/, so its project root is 3 levels up
+            root_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
             # Phase 1 — Database
             self._set_phase("FASE 1/3 · Inizializzazione database…")

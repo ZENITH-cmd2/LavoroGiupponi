@@ -90,6 +90,7 @@ class DataImporter:
 
     def _import_fortech(self, conn, file_path):
         df = pd.read_excel(file_path)
+        df = df.where(pd.notna(df), None)
         righe_importate = 0
         cur = conn.cursor()
         
@@ -98,6 +99,23 @@ class DataImporter:
             impianto_id = self._ottieni_impianto_id(conn, codice_pv)
             if not impianto_id: continue
                 
+            # Calcola i campi teorici per la riconciliazione
+            corrispettivo_totale = row.get('Corrispettivo Totale', 0) or 0
+            fatture_post = row.get('Fatture Postpagate Totale', 0) or 0
+            fatture_pre = row.get('Fatture Prepagate Totale', 0) or 0
+            buoni_tot = row.get('Buoni Totale', 0) or 0
+            
+            # Leggi i campi calcolati se presenti nell'Excel, altrimenti calcola
+            incasso_carte_bancarie = row.get('Incasso Carte Bancarie Teorico', None)
+            incasso_satispay = row.get('Incasso Satispay Teorico', None)
+            incasso_credito = row.get('Incasso Credito Finemese Teorico', None)
+            incasso_contanti = row.get('Incasso Contanti Teorico', None)
+            
+            # Se non presenti nell'Excel, usa il campo contanti residuo come fallback
+            # Fortech calcola: Totale - Elettronico = Contanti
+            if incasso_contanti is None:
+                incasso_contanti = row.get('Contanti Teorico', 0) or 0
+            
             cur.execute("""
                 INSERT INTO import_fortech_master (
                     impianto_id, codice_pv, data_contabile, data_inizio, data_fine,
@@ -106,23 +124,29 @@ class DataImporter:
                     volume_diesel_prepay, importo_diesel_prepay, prezzo_diesel_prepay,
                     fatture_postpagate_totale, fatture_prepagate_totale, 
                     fatture_immediate_totale, fatture_differite_totale, buoni_totale,
+                    incasso_carte_bancarie_teorico, incasso_satispay_teorico,
+                    incasso_credito_finemese_teorico, incasso_contanti_teorico,
                     file_origine
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 impianto_id, codice_pv, row.get('DataContabile'), row.get('DataInizio'),
-                row.get('DataFine'), row.get('StatoGiornata'), row.get('Corrispettivo Totale', 0),
+                row.get('DataFine'), row.get('StatoGiornata'), corrispettivo_totale,
                 row.get('CorrispettivoVerde', 0), row.get('CorrispettivoDiesel', 0),
                 row.get('VolumeVerdePrepay', 0), row.get('ImportoVerdePrepay', 0), row.get('PrezzoVerdePrepay', 0),
                 row.get('VolumeDieselPrepay', 0), row.get('ImportoDieselPrepay', 0), row.get('PrezzoDieselPrepay', 0),
-                row.get('Fatture Postpagate Totale', 0), row.get('Fatture Prepagate Totale', 0),
+                fatture_post, fatture_pre,
                 row.get('Fatture Immediate Totale', 0), row.get('Fatture Differite Totale', 0),
-                row.get('Buoni Totale', 0), os.path.basename(file_path)
+                buoni_tot,
+                incasso_carte_bancarie, incasso_satispay,
+                incasso_credito, incasso_contanti,
+                os.path.basename(file_path)
             ))
             righe_importate += 1
         conn.commit()
 
     def _import_as400(self, conn, file_path):
         df = pd.read_excel(file_path)
+        df = df.where(pd.notna(df), None)
         righe_importate = 0
         # Default to Milano Repubblica (43809) if not specified, matching original script behavior
         impianto_id = self._ottieni_impianto_id(conn, "43809") 
@@ -150,6 +174,7 @@ class DataImporter:
 
     def _import_numia(self, conn, file_path):
         df = pd.read_excel(file_path, header=1)
+        df = df.where(pd.notna(df), None)
         righe_importate = 0
         impianto_id = self._ottieni_impianto_id(conn, "43809")
         cur = conn.cursor()
@@ -181,6 +206,7 @@ class DataImporter:
         if len(df) > 0:
             df.columns = df.iloc[0]
             df = df.iloc[1:]
+        df = df.where(pd.notna(df), None)
         
         cur = conn.cursor()
         for _, row in df.iterrows():
@@ -211,6 +237,7 @@ class DataImporter:
         if len(df) > 0:
             df.columns = df.iloc[0]
             df = df.iloc[1:]
+        df = df.where(pd.notna(df), None)
         
         cur = conn.cursor()
         for _, row in df.iterrows():
@@ -240,6 +267,7 @@ class DataImporter:
 
     def _import_satispay(self, conn, file_path):
         df = pd.read_excel(file_path)
+        df = df.where(pd.notna(df), None)
         cur = conn.cursor()
         
         for _, row in df.iterrows():

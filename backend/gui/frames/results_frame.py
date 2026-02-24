@@ -1,4 +1,7 @@
 import customtkinter as ctk
+import threading
+from tkinter import simpledialog, messagebox
+from core.ai_report import generate_report, get_saved_api_key, save_api_key
 
 
 _STATUS_STYLE = {
@@ -44,11 +47,28 @@ class ResultsFrame(ctk.CTkFrame):
         self.cards.grid_columnconfigure(0, weight=1)
 
         # ── Bottom ──
+        self.bottom_frame = ctk.CTkFrame(self, fg_color="transparent")
+        self.bottom_frame.grid(row=3, column=0, pady=20)
+
         ctk.CTkButton(
-            self, text="🏠  Torna alla Home",
+            self.bottom_frame, text="🏠  Torna",
             command=lambda: self.controller.show_frame("WelcomeFrame"),
-            width=200, corner_radius=8,
-        ).grid(row=3, column=0, pady=20)
+            width=140, corner_radius=8,
+        ).grid(row=0, column=0, padx=10)
+
+        self.btn_ai = ctk.CTkButton(
+            self.bottom_frame, text="🤖 Genera Report AI",
+            command=self._generate_ai_report,
+            width=160, corner_radius=8, fg_color="#8e44ad", hover_color="#9b59b6"
+        )
+        self.btn_ai.grid(row=0, column=1, padx=10)
+
+        self.ai_provider = ctk.CTkOptionMenu(
+            self.bottom_frame, values=["OpenRouter", "Gemini"],
+            width=120, corner_radius=8
+        )
+        self.ai_provider.grid(row=0, column=2, padx=10)
+        self.ai_provider.set("OpenRouter")
 
     # ── Lifecycle ──
     def on_show(self, **_):
@@ -116,3 +136,53 @@ class ResultsFrame(ctk.CTkFrame):
 
             # Bottom padding inside card
             ctk.CTkLabel(card, text="").grid(row=row_i, column=0, pady=4)
+
+    def _generate_ai_report(self):
+        results = self.controller.shared_data.get("results", [])
+        if not results:
+            messagebox.showinfo("Niente da analizzare", "Non ci sono risultati da analizzare.")
+            return
+
+        provider = self.ai_provider.get()
+        api_key = get_saved_api_key(provider)
+        
+        if not api_key:
+            api_key = simpledialog.askstring(
+                f"Chiave API {provider}",
+                f"Inserisci la tua chiave API di {provider} per generare il report:",
+                parent=self
+            )
+            if not api_key:
+                return  # Canceled
+            save_api_key(provider, api_key)
+
+        self.btn_ai.configure(state="disabled", text="⏳ Generazione...")
+
+        def _worker():
+            try:
+                report_text = generate_report(results, provider, api_key)
+                self.after(0, lambda: self._show_report_window(report_text, provider))
+            except Exception as e:
+                self.after(0, lambda: messagebox.showerror("Errore AI", str(e)))
+            finally:
+                self.after(0, lambda: self.btn_ai.configure(state="normal", text="🤖 Genera Report AI"))
+
+        threading.Thread(target=_worker, daemon=True).start()
+
+    def _show_report_window(self, text: str, provider: str):
+        win = ctk.CTkToplevel(self)
+        win.title(f"Report Analisi AI ({provider})")
+        win.geometry("700x500")
+        win.attributes("-topmost", True)  # Fallback focus
+
+        lbl = ctk.CTkLabel(win, text="🤖 Analisi Intelligente Risultati", font=("Segoe UI", 18, "bold"))
+        lbl.pack(pady=10)
+
+        txt = ctk.CTkTextbox(win, font=("Consolas", 13), corner_radius=10, wrap="word")
+        txt.pack(expand=True, fill="both", padx=20, pady=10)
+        txt.insert("1.0", text)
+        txt.configure(state="disabled")
+
+        btn = ctk.CTkButton(win, text="Chiudi", command=win.destroy)
+        btn.pack(pady=10)
+

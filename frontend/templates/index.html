@@ -3,158 +3,304 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <title>Calor Systems</title>
-    <!-- CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calor Systems — Dashboard Riconciliazione</title>
+    <meta name="description" content="Sistema di riconciliazione automatica incassi per stazioni di servizio">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css">
 </head>
 
 <body>
-
-    <div id="app-container">
-
-        <!-- ══════════════════════════════════════════════════ -->
-        <!-- FRAME: WELCOME (Home)                              -->
-        <!-- ══════════════════════════════════════════════════ -->
-        <div id="WelcomeFrame" class="frame active">
-            <div class="welcome-icon">⚙️</div>
-
-            <h1>Calor Systems</h1>
-            <p class="subtitle">Sistema di Riconciliazione Dati – DEMO</p>
-
-            <p class="description">
-                Questa è una versione dimostrativa del software.<br>
-                Premi il pulsante qui sotto per iniziare:<br>
-                caricherai i tuoi file Excel e il sistema<br>
-                verificherà automaticamente la quadratura dei conti.
-            </p>
-
-            <button class="ctk-button" id="btnStart"
-                style="width: 260px; height: 48px; border-radius: 12px; font-size: 16px;">
-                ▶ INIZIA IL TEST
-            </button>
-            <br><br>
-            <!-- Aggiunta: Link diretto ai risultati se presenti dati -->
-            <a href="#" id="lnkSkip" style="color: #555; font-size: 13px; text-decoration: none;">(Vedi risultati
-                precedenti)</a>
-        </div>
-
-        <!-- ══════════════════════════════════════════════════ -->
-        <!-- FRAME: INPUT (File Selection)                      -->
-        <!-- ══════════════════════════════════════════════════ -->
-        <div id="InputFrame" class="frame">
-            <h1 style="margin-bottom: 0.5rem;">📂 Caricamento Dati</h1>
-            <p class="subtitle" style="margin-bottom: 1.5rem;">Seleziona i file Excel dei punti vendita che vuoi
-                analizzare.</p>
-
-            <!-- File List Container -->
-            <div class="scroll-area"
-                style="background: #2b2b2b; border: 1px solid #3e3e3e; margin-bottom: 1.5rem; display: flex; flex-direction: column;">
-                <div id="file-list-header"
-                    style="padding: 10px 15px; border-bottom: 1px solid #3e3e3e; font-size: 13px; font-weight: bold; color: var(--text-dim);">
-                    File selezionati (0)
+    <!-- ══════════ SIDEBAR ══════════ -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">⛽</span>
+                <div>
+                    <h1>Calor Systems</h1>
+                    <span class="logo-sub">Riconciliazione</span>
                 </div>
-                <div id="file-list" style="flex: 1; overflow-y: auto; padding: 10px;">
-                    <!-- Items go here -->
-                    <div id="file-placeholder" style="text-align: center; color: #777; padding: 2rem;">
-                        Nessun file ancora selezionato.<br>
-                        Clicca «Aggiungi File» per iniziare.
+            </div>
+        </div>
+        <ul class="nav-list">
+            <li class="nav-item active" data-view="dashboard">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </li>
+            <li class="nav-item" data-view="upload">
+                <span class="nav-icon">📂</span>
+                <span>Carica File</span>
+            </li>
+            <li class="nav-item" data-view="riconciliazioni">
+                <span class="nav-icon">🔄</span>
+                <span>Riconciliazioni</span>
+            </li>
+            <li class="nav-item" data-view="contanti">
+                <span class="nav-icon">💰</span>
+                <span>Contanti</span>
+            </li>
+            <li class="nav-item" data-view="impianti">
+                <span class="nav-icon">🏢</span>
+                <span>Impianti</span>
+            </li>
+            <li class="nav-item" data-view="sicurezza">
+                <span class="nav-icon">🔐</span>
+                <span>Sicurezza</span>
+            </li>
+            <li class="nav-item" data-view="ai-report">
+                <span class="nav-icon">🤖</span>
+                <span>Report AI</span>
+            </li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="sidebar-version">v2.0 — Workflow Completo</div>
+        </div>
+    </nav>
+
+    <!-- ══════════ MAIN CONTENT ══════════ -->
+    <main class="main-content">
+        <!-- HEADER BAR -->
+        <header class="top-bar">
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <h2 class="page-title" id="pageTitle">Dashboard</h2>
+            <div class="header-right">
+                <span class="status-dot" id="statusDot"></span>
+                <span class="status-text" id="statusText">Connesso</span>
+            </div>
+        </header>
+
+        <!-- ═══ VIEW: DASHBOARD ═══ -->
+        <section class="view active" id="view-dashboard">
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card" id="statImpianti">
+                    <div class="stat-icon">🏢</div>
+                    <div class="stat-value">—</div>
+                    <div class="stat-label">Impianti Attivi</div>
+                </div>
+                <div class="stat-card" id="statGiornate">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-value">—</div>
+                    <div class="stat-label">Giornate Analizzate</div>
+                </div>
+                <div class="stat-card stat-ok" id="statQuadrate">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value">—</div>
+                    <div class="stat-label">Quadrature OK</div>
+                </div>
+                <div class="stat-card stat-warn" id="statAnomalie">
+                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-value">—</div>
+                    <div class="stat-label">Anomalie Aperte</div>
+                </div>
+                <div class="stat-card stat-danger" id="statGravi">
+                    <div class="stat-icon">🔴</div>
+                    <div class="stat-value">—</div>
+                    <div class="stat-label">Anomalie Gravi</div>
+                </div>
+                <div class="stat-card" id="statRecords">
+                    <div class="stat-icon">📄</div>
+                    <div class="stat-value">—</div>
+                    <div class="stat-label">Record Importati</div>
+                </div>
+            </div>
+
+            <!-- Stato Verifiche per Impianto -->
+            <div class="section-header">
+                <h3>Stato Verifiche per Impianto</h3>
+                <button class="btn-refresh" onclick="loadStatoVerifiche()">🔄 Aggiorna</button>
+            </div>
+            <div class="verifiche-grid" id="verificheGrid">
+                <div class="empty-state">Nessun dato disponibile. Carica i file Excel per iniziare.</div>
+            </div>
+        </section>
+
+        <!-- ═══ VIEW: UPLOAD ═══ -->
+        <section class="view" id="view-upload">
+            <div class="upload-container">
+                <div class="upload-zone" id="uploadZone">
+                    <div class="upload-icon">📂</div>
+                    <h3>Trascina qui i file Excel</h3>
+                    <p>Oppure clicca per selezionare i file</p>
+                    <p class="upload-hint">Supportati: Fortech, AS400, Numia, iP Portal, Satispay</p>
+                    <input type="file" id="fileInput" multiple accept=".xlsx,.xls,.csv" hidden>
+                </div>
+
+                <div class="file-list" id="fileList">
+                    <!-- Files will be listed here -->
+                </div>
+
+                <div class="upload-actions" id="uploadActions" style="display:none">
+                    <button class="btn btn-secondary" onclick="clearFiles()">🗑 Svuota</button>
+                    <button class="btn btn-primary" id="btnProcess" onclick="processFiles()">▶ Elabora File</button>
+                </div>
+
+                <!-- Processing Progress -->
+                <div class="progress-section" id="progressSection" style="display:none">
+                    <div class="progress-header">
+                        <span class="progress-phase" id="progressPhase">Preparazione...</span>
+                        <span class="progress-pct" id="progressPct">0%</span>
+                    </div>
+                    <div class="progress-bar-track">
+                        <div class="progress-bar-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-log" id="progressLog"></div>
+                </div>
+
+                <!-- Results Summary -->
+                <div class="results-summary" id="resultsSummary" style="display:none">
+                    <div class="results-header">
+                        <span class="results-icon">✅</span>
+                        <h3>Elaborazione Completata</h3>
+                    </div>
+                    <div class="results-stats" id="resultsStats"></div>
+                    <button class="btn btn-primary" onclick="switchView('riconciliazioni')">📊 Vedi Risultati</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ VIEW: RICONCILIAZIONI ═══ -->
+        <section class="view" id="view-riconciliazioni">
+            <div class="section-header">
+                <h3>Risultati Riconciliazione</h3>
+                <div class="filters">
+                    <input type="date" id="filterDa" class="input-date" placeholder="Da">
+                    <input type="date" id="filterA" class="input-date" placeholder="A">
+                    <button class="btn btn-small" onclick="loadRiconciliazioni()">Filtra</button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table class="data-table" id="riconciliazioniTable">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Impianto</th>
+                            <th>Categoria</th>
+                            <th>Fortech (€)</th>
+                            <th>Reale (€)</th>
+                            <th>Diff (€)</th>
+                            <th>Stato</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody id="riconciliazioniBody">
+                        <tr>
+                            <td colspan="8" class="empty-state">Nessun dato</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ═══ VIEW: CONTANTI (SIMONA - CONFERMA MATCHING) ═══ -->
+        <section class="view" id="view-contanti">
+            <div class="section-header">
+                <h3>💰 Controllo Contanti — Conferma Matching</h3>
+                <button class="btn-refresh" onclick="loadContantiBanca()">🔄 Aggiorna</button>
+            </div>
+            <p class="view-description">Verifica i risultati del matching automatico tra contante teorico (Fortech) e
+                versamenti bancari (AS400). Espandi ogni riga per vedere i dettagli del calcolo e conferma o segnala il
+                risultato.</p>
+
+            <!-- Summary Stats -->
+            <div class="contanti-stats" id="contantiStats"></div>
+
+            <!-- Matching Results -->
+            <div class="contanti-list" id="contantiList">
+                <div class="empty-state">Nessun dato contanti disponibile</div>
+            </div>
+        </section>
+
+        <!-- ═══ VIEW: IMPIANTI ═══ -->
+        <section class="view" id="view-impianti">
+            <div class="section-header">
+                <h3>🏢 Impianti</h3>
+                <button class="btn-refresh" onclick="loadImpianti()">🔄 Aggiorna</button>
+            </div>
+            <div class="impianti-grid" id="impiantiGrid">
+                <div class="empty-state">Nessun dato</div>
+            </div>
+        </section>
+
+        <!-- ═══ VIEW: SICUREZZA ═══ -->
+        <section class="view" id="view-sicurezza">
+            <div class="section-header">
+                <h3>🔐 Alert Sicurezza — Taleggio</h3>
+            </div>
+            <p class="view-description">Monitoraggio aperture cassaforte per impianti self-service (Taleggio).
+                L'apertura è autorizzata solo il giovedì. Il contante prelevato deve corrispondere all'incasso Fortech
+                nel periodo.</p>
+
+            <div
+                style="background:var(--bg-card);border-radius:var(--radius);border:1px solid rgba(210,153,34,0.3);padding:48px 32px;text-align:center;max-width:600px;margin:40px auto">
+                <div style="font-size:48px;margin-bottom:16px">🚧</div>
+                <h3 style="font-size:18px;font-weight:700;margin-bottom:12px">Funzionalità in arrivo</h3>
+                <p style="color:var(--text-secondary);font-size:13px;line-height:1.7;margin-bottom:20px">
+                    Questa sezione sarà attiva nella prossima versione, quando verrà integrato il modulo di
+                    <strong>scraping Taleggio</strong> per la lettura automatica degli eventi cassaforte IoT.
+                </p>
+                <div style="display:flex;flex-direction:column;gap:8px;text-align:left;max-width:380px;margin:0 auto">
+                    <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text-secondary)">
+                        <span style="color:var(--status-ok)">✅</span> Struttura frontend pronta
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text-secondary)">
+                        <span style="color:var(--status-ok)">✅</span> Endpoint API <code
+                            style="background:var(--bg-tertiary);padding:1px 6px;border-radius:4px;font-size:11px">/api/sicurezza</code>
+                        configurato
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text-secondary)">
+                        <span style="color:var(--status-warn)">⏳</span> In attesa: modulo scraping Taleggio
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text-secondary)">
+                        <span style="color:var(--status-warn)">⏳</span> In attesa: integrazione dati cassaforte IoT
                     </div>
                 </div>
             </div>
+        </section>
 
-            <!-- Controls -->
-            <div style="display: flex; gap: 10px; margin-bottom: 1.5rem;">
-                <input type="file" id="fileInput" multiple accept=".xlsx, .xls" style="display: none;">
+        <!-- ═══ VIEW: AI REPORT ═══ -->
+        <section class="view" id="view-ai-report">
+            <div class="section-header">
+                <h3>🤖 Report AI — Analisi Intelligente</h3>
+            </div>
+            <p class="view-description">L'intelligenza artificiale analizza i risultati della riconciliazione e genera
+                un report professionale con anomalie, criticità e suggerimenti. Powered by OpenRouter (GPT-4o Mini).</p>
 
-                <button class="ctk-button" id="btnAddFile" style="width: 170px;">
-                    ➕ Aggiungi File
+            <div class="ai-controls">
+                <button class="btn btn-ai" id="btnGenerateAI" onclick="generateAIReport()">
+                    <span class="ai-sparkle">✨</span> Genera Report AI
                 </button>
-
-                <button class="ctk-button danger" id="btnClearFiles" style="width: 170px;">
-                    🗑 Svuota Lista
-                </button>
-
-                <div style="flex: 1;"></div>
-
-                <button class="ctk-button" id="btnUpload" disabled style="width: 170px;">
-                    Avanti ➡
-                </button>
+                <span class="ai-status" id="aiStatus"></span>
             </div>
 
-            <button class="ctk-button outline" id="btnBackInput" style="width: 100px; border: none;">
-                ← Indietro
-            </button>
-        </div>
-
-        <!-- ══════════════════════════════════════════════════ -->
-        <!-- FRAME: PROCESSING                                  -->
-        <!-- ══════════════════════════════════════════════════ -->
-        <div id="ProcessingFrame" class="frame" style="justify-content: center; align-items: center;">
-            <h1 style="margin-bottom: 2rem;">⏳ Elaborazione in corso…</h1>
-            <p id="proc-phase" style="color: #3498db; margin-bottom: 1rem;">Caricamento file al server…</p>
-
-            <!-- Indeterminate Progress -->
-            <div
-                style="width: 500px; height: 16px; background: #3e3e3e; border-radius: 8px; overflow: hidden; margin-bottom: 1rem; position: relative;">
-                <div id="proc-bar"
-                    style="width: 30%; height: 100%; background: #3a7ebf; position: absolute; left: 0; animation: shimmer 2s infinite linear;">
+            <div class="ai-report-container" id="aiReportContainer" style="display:none">
+                <div class="ai-report-header">
+                    <span>🤖 Analisi AI</span>
+                    <span class="ai-timestamp" id="aiTimestamp"></span>
                 </div>
+                <div class="ai-report-body" id="aiReportBody"></div>
             </div>
+        </section>
+    </main>
 
-            <p id="proc-pct" style="font-weight: bold; height: 20px;"></p>
-
-            <div id="proc-log"
-                style="width: 500px; height: 150px; background: #1a1a1a; color: #ccc; font-family: Consolas, monospace; font-size: 11px; padding: 10px; margin-top: 20px; border-radius: 8px; overflow-y: auto;">
-                <!-- Logs -->
-            </div>
-        </div>
-
-        <!-- ══════════════════════════════════════════════════ -->
-        <!-- FRAME: RESULTS                                     -->
-        <!-- ══════════════════════════════════════════════════ -->
-        <div id="ResultsFrame" class="frame">
-            <div class="header">
-                <h1>📊 Risultati Analisi</h1>
-                <p class="summary-label" id="res-summary">Caricamento risultati…</p>
-            </div>
-
-            <div class="scroll-area">
-                <div id="cards-container" class="results-list">
-                    <!-- Cards injected here -->
+    <!-- ══════════ MODAL: DETTAGLIO IMPIANTO ══════════ -->
+    <div class="modal-overlay" id="modalOverlay" style="display:none" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div>
+                    <h3 id="modalTitle">Impianto</h3>
+                    <span class="modal-subtitle" id="modalSubtitle"></span>
                 </div>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
             </div>
-
-            <div class="footer-controls">
-                <button class="ctk-button" id="btnHome" style="width: 200px;">
-                    🏠 Torna alla Home
-                </button>
+            <div class="modal-body" id="modalBody">
+                <div class="empty-state">Caricamento...</div>
             </div>
         </div>
-
     </div>
 
-    <!-- Floating Navigation Buttons -->
-    <div class="fab-container">
-        <button class="fab-btn" id="btnScrollUp" title="Torna su">↑</button>
-        <button class="fab-btn" id="btnScrollDown" title="Vai giù">↓</button>
-    </div>
-
-    <!-- JS -->
     <script src="/static/app.js"></script>
-
-    <style>
-        @keyframes shimmer {
-            0% {
-                left: -30%;
-            }
-
-            100% {
-                left: 100%;
-            }
-        }
-    </style>
 </body>
 
 </html>

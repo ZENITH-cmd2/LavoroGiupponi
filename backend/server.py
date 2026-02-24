@@ -23,6 +23,11 @@ sys.path.append(PROJECT_ROOT) # Ensure core can be imported
 from core.database import Database
 from core.importer import DataImporter
 from core.analyzer import Analyzer
+from core.ai_report import generate_report, get_saved_api_key
+
+from dotenv import load_dotenv
+load_dotenv(".env.local")
+load_dotenv()
 
 DB_PATH = os.path.join(PROJECT_ROOT, "db", "calor_systems.db")
 
@@ -157,6 +162,93 @@ def api_impianti():
         conn.close()
 
 
+@app.route("/api/impianti/<int:impianto_id>/andamento")
+def api_andamento(impianto_id):
+    """Andamento riconciliazione per un singolo impianto nel tempo."""
+    conn = get_readonly_db()
+    try:
+        cur = conn.cursor()
+        
+        # Info impianto
+        cur.execute("SELECT nome_impianto, codice_pv_fortech, tipo_gestione FROM impianti WHERE id = ?", (impianto_id,))
+        imp = cur.fetchone()
+        if not imp:
+            return jsonify({"error": "Impianto non trovato"}), 404
+        
+        # Storico riconciliazioni
+        cur.execute("""
+            SELECT 
+                r.data_riferimento,
+                r.categoria,
+                r.valore_fortech,
+                r.valore_reale,
+                r.differenza,
+                r.stato,
+                r.note
+            FROM report_riconciliazioni r
+            WHERE r.impianto_id = ?
+            ORDER BY r.data_riferimento DESC, r.categoria
+        """, (impianto_id,))
+        
+        rows = cur.fetchall()
+        
+        # Raggruppa per data
+        giorni = {}
+        for r in rows:
+            data = r["data_riferimento"]
+            if data not in giorni:
+                giorni[data] = {
+                    "data": data,
+                    "categorie": {},
+                    "totale_teorico": 0,
+                    "totale_reale": 0,
+                    "totale_diff": 0,
+                    "stato_peggiore": "QUADRATO"
+                }
+            
+            cat = r["categoria"]
+            giorni[data]["categorie"][cat] = {
+                "teorico": r["valore_fortech"],
+                "reale": r["valore_reale"],
+                "differenza": r["differenza"],
+                "stato": r["stato"],
+                "note": r["note"],
+            }
+            
+            giorni[data]["totale_teorico"] += (r["valore_fortech"] or 0)
+            giorni[data]["totale_reale"] += (r["valore_reale"] or 0)
+            giorni[data]["totale_diff"] += (r["differenza"] or 0)
+            
+            # Track worst state per day
+            priority = {"QUADRATO": 0, "QUADRATO_ARROT": 1, "ANOMALIA_LIEVE": 2, 
+                        "IN_ATTESA": 3, "NON_TROVATO": 4, "ANOMALIA_GRAVE": 5}
+            curr_p = priority.get(r["stato"], 4)
+            worst_p = priority.get(giorni[data]["stato_peggiore"], 0)
+            if curr_p > worst_p:
+                giorni[data]["stato_peggiore"] = r["stato"]
+        
+        # Statistiche riepilogative
+        stati_count = {}
+        for g in giorni.values():
+            for cat_det in g["categorie"].values():
+                s = cat_det["stato"]
+                stati_count[s] = stati_count.get(s, 0) + 1
+
+        return jsonify({
+            "impianto": {
+                "id": impianto_id,
+                "nome": imp["nome_impianto"],
+                "codice_pv": imp["codice_pv_fortech"],
+                "tipo": imp["tipo_gestione"],
+            },
+            "giorni": list(giorni.values()),
+            "stats": stati_count,
+            "totale_giorni": len(giorni),
+        })
+    finally:
+        conn.close()
+
+
 @app.route("/api/riconciliazioni")
 def api_riconciliazioni():
     """Reconciliation results with optional filters."""
@@ -286,6 +378,286 @@ def api_upload():
     finally:
         # Cleanup
         shutil.rmtree(temp_dir, ignore_errors=True)
+
+
+# ============================================================================
+# API ENDPOINTS (WORKFLOW: Simona / Lidia / Taleggio)
+# ============================================================================
+
+@app.route("/api/contanti-banca")
+def api_contanti_banca():
+    """Vista Simona: stato dei versamenti contanti con matching banca.
+    Mostra per ogni impianto/giornata il teorico Fortech vs il versato in banca (AS400).
+    Include dettagli matching (tipo_match, giorni coperti) per conferma manuale.
+    """
+    conn = get_readonly_db()
+    try:
+        cur = conn.cursor()
+        limit = request.args.get("limit", 100, type=int)
+        
+        cur.execute("""
+            SELECT 
+                r.id,
+                r.data_riferimento,
+                i.nome_impianto,
+                i.codice_pv_fortech,
+                r.valore_fortech as contanti_teorico,
+                r.valore_reale as contanti_versato,
+                r.differenza,
+                r.stato,
+                r.tipo_anomalia,
+                r.note,
+                r.risolto,
+                r.verificato_da,
+                r.data_verifica
+            FROM report_riconciliazioni r
+            JOIN impianti i ON r.impianto_id = i.id
+            WHERE r.categoria = 'contanti'
+            ORDER BY r.data_riferimento DESC, i.nome_impianto
+            LIMIT ?
+        """, (limit,))
+        
+        rows = cur.fetchall()
+        result = []
+        for r in rows:
+            result.append({
+                "id": r["id"],
+                "data": r["data_riferimento"],
+                "impianto": r["nome_impianto"],
+                "codice_pv": r["codice_pv_fortech"],
+                "contanti_teorico": r["contanti_teorico"],
+                "contanti_versato": r["contanti_versato"],
+                "differenza": r["differenza"],
+                "stato": r["stato"],
+                "tipo_match": r["tipo_anomalia"] or "",
+                "note": r["note"],
+                "risolto": bool(r["risolto"]),
+                "verificato_da": r["verificato_da"],
+                "data_verifica": r["data_verifica"],
+            })
+        return jsonify(result)
+    finally:
+        conn.close()
+
+
+@app.route("/api/contanti-conferma", methods=["POST"])
+def api_contanti_conferma():
+    """Simona conferma o segnala un risultato di matching contanti.
+    Body JSON: { id: int, azione: "conferma"|"rifiuta", nota: string }
+    """
+    data = request.get_json()
+    if not data or 'id' not in data:
+        return jsonify({"error": "ID mancante"}), 400
+    
+    rec_id = data['id']
+    azione = data.get('azione', 'conferma')
+    nota_extra = data.get('nota', '')
+    
+    conn = sqlite3.connect(DB_PATH)
+    try:
+        cur = conn.cursor()
+        
+        if azione == 'conferma':
+            cur.execute("""
+                UPDATE report_riconciliazioni 
+                SET risolto = 1,
+                    verificato_da = 'Simona',
+                    data_verifica = datetime('now'),
+                    note = CASE 
+                        WHEN ? != '' THEN note || ' | Confermato: ' || ?
+                        ELSE note || ' | Confermato da Simona'
+                    END
+                WHERE id = ?
+            """, (nota_extra, nota_extra, rec_id))
+        elif azione == 'rifiuta':
+            cur.execute("""
+                UPDATE report_riconciliazioni 
+                SET risolto = 0,
+                    verificato_da = 'Simona',
+                    data_verifica = datetime('now'),
+                    stato = 'ANOMALIA_GRAVE',
+                    note = CASE 
+                        WHEN ? != '' THEN note || ' | SEGNALATO: ' || ?
+                        ELSE note || ' | SEGNALATO da Simona'
+                    END
+                WHERE id = ?
+            """, (nota_extra, nota_extra, rec_id))
+        
+        conn.commit()
+        return jsonify({"ok": True, "azione": azione})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        conn.close()
+
+
+@app.route("/api/stato-verifiche")
+def api_stato_verifiche():
+    """Vista riepilogo: stato riconciliazione per categoria.
+    Per ogni impianto mostra lo stato di ogni tipo di verifica.
+    """
+    conn = get_readonly_db()
+    try:
+        cur = conn.cursor()
+        
+        # Ultima data disponibile per ogni impianto/categoria
+        cur.execute("""
+            SELECT 
+                i.nome_impianto,
+                i.codice_pv_fortech,
+                i.tipo_gestione,
+                r.categoria,
+                r.data_riferimento,
+                r.valore_fortech,
+                r.valore_reale,
+                r.differenza,
+                r.stato,
+                r.note
+            FROM report_riconciliazioni r
+            JOIN impianti i ON r.impianto_id = i.id
+            WHERE r.data_riferimento = (
+                SELECT MAX(r2.data_riferimento) 
+                FROM report_riconciliazioni r2 
+                WHERE r2.impianto_id = r.impianto_id AND r2.categoria = r.categoria
+            )
+            AND i.attivo = 1
+            ORDER BY i.nome_impianto, r.categoria
+        """)
+        
+        rows = cur.fetchall()
+        impianti = {}
+        for r in rows:
+            nome = r["nome_impianto"]
+            if nome not in impianti:
+                impianti[nome] = {
+                    "nome": nome,
+                    "codice_pv": r["codice_pv_fortech"],
+                    "tipo_gestione": r["tipo_gestione"],
+                    "categorie": {}
+                }
+            impianti[nome]["categorie"][r["categoria"]] = {
+                "data": r["data_riferimento"],
+                "teorico": r["valore_fortech"],
+                "reale": r["valore_reale"],
+                "differenza": r["differenza"],
+                "stato": r["stato"],
+                "note": r["note"],
+            }
+        
+        return jsonify(list(impianti.values()))
+    finally:
+        conn.close()
+
+
+@app.route("/api/sicurezza")
+def api_sicurezza():
+    """Alert sicurezza casse (Taleggio e altri self-service).
+    Mostra gli eventi di apertura cassaforte con verifica contante.
+    """
+    conn = get_readonly_db()
+    try:
+        cur = conn.cursor()
+        limit = request.args.get("limit", 50, type=int)
+        
+        cur.execute("""
+            SELECT 
+                e.timestamp_apertura,
+                e.giorno_settimana,
+                i.nome_impianto,
+                e.importo_rilevato_fortech,
+                e.importo_atteso,
+                e.differenza,
+                e.apertura_autorizzata,
+                e.alert_inviato,
+                e.note
+            FROM eventi_sicurezza_casse e
+            JOIN impianti i ON e.impianto_id = i.id
+            ORDER BY e.timestamp_apertura DESC
+            LIMIT ?
+        """, (limit,))
+        
+        rows = cur.fetchall()
+        result = []
+        for r in rows:
+            result.append({
+                "timestamp": r["timestamp_apertura"],
+                "giorno": r["giorno_settimana"],
+                "impianto": r["nome_impianto"],
+                "importo_fortech": r["importo_rilevato_fortech"],
+                "importo_atteso": r["importo_atteso"],
+                "differenza": r["differenza"],
+                "autorizzata": bool(r["apertura_autorizzata"]) if r["apertura_autorizzata"] is not None else None,
+                "alert_inviato": bool(r["alert_inviato"]),
+                "note": r["note"],
+            })
+        return jsonify(result)
+    finally:
+        conn.close()
+
+
+# ============================================================================
+# API ENDPOINT: AI REPORT (OpenRouter)
+# ============================================================================
+
+@app.route("/api/ai-report", methods=["POST"])
+def api_ai_report():
+    """Genera un report AI basato sui risultati di riconciliazione.
+    Usa OpenRouter (gpt-4o-mini) per analizzare le anomalie.
+    """
+    try:
+        # Fetch all reconciliation results from DB
+        conn = get_readonly_db()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT 
+                r.data_riferimento,
+                i.nome_impianto,
+                r.categoria,
+                r.valore_fortech,
+                r.valore_reale,
+                r.differenza,
+                r.stato,
+                r.note
+            FROM report_riconciliazioni r
+            JOIN impianti i ON r.impianto_id = i.id
+            ORDER BY r.data_riferimento DESC
+            LIMIT 500
+        """)
+        rows = cur.fetchall()
+        conn.close()
+
+        if not rows:
+            return jsonify({"report": "Nessun dato da analizzare. Carica prima i file Excel."})
+
+        # Convert DB rows to the format expected by generate_report()
+        days = {}
+        for r in rows:
+            date_key = r["data_riferimento"]
+            if date_key not in days:
+                days[date_key] = {"data": date_key, "risultati": {}}
+            days[date_key]["risultati"][r["categoria"]] = {
+                "stato": r["stato"],
+                "differenza": r["differenza"],
+                "note": r["note"] or "",
+                "teorico": r["valore_fortech"],
+                "reale": r["valore_reale"],
+            }
+
+        results_list = list(days.values())
+
+        # Get API key
+        api_key = get_saved_api_key("OpenRouter")
+        if not api_key:
+            return jsonify({"error": "Chiave API OpenRouter non configurata. Salva OPENROUTER_API_KEY in .env.local"}), 400
+
+        # Generate report
+        report_text = generate_report(results_list, "OpenRouter", api_key)
+        return jsonify({"report": report_text})
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
 
 
 # ============================================================================

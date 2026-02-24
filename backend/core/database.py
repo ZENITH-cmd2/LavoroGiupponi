@@ -32,6 +32,9 @@ class Database:
             print("Database initialized successfully.")
             return True
         except Exception as e:
+            if "already exists" in str(e).lower():
+                print("Tables already initialized.")
+                return True
             print(f"Error initializing database: {e}")
             return False
         finally:
