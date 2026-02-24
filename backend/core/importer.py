@@ -227,7 +227,11 @@ class DataImporter:
 
         for _, row in df.iterrows():
             importo = row.get('Importo')
-            if pd.isna(importo): continue
+            reg_data = row.get('Registrazione//Data')
+            
+            # Skip empty rows or detail lines (which have no Registration Date)
+            if pd.isna(importo) or pd.isna(reg_data): 
+                continue
             
             cur.execute("""
                 INSERT INTO verifica_contanti_as400 (
@@ -297,18 +301,20 @@ class DataImporter:
         conn.commit()
 
     def _import_ip_carte(self, conn, file_path):
-        df = pd.read_excel(file_path, header=0)
-        if len(df) > 0:
-            df.columns = df.iloc[0]
-            df = df.iloc[1:]
+        df = pd.read_excel(file_path, header=1)
         df = df.where(pd.notna(df), None)
         
         cur = conn.cursor()
         for _, row in df.iterrows():
             pv = row.get('PV')
             if pd.isna(pv): continue
-            impianto_id = self._ottieni_impianto_id(conn, str(pv))
+            
+            pv_code = str(pv).strip()
+
+            impianto_id = self._ottieni_impianto_id(conn, pv_code)
             if not impianto_id: continue
+
+            quantita = row.get('Quantità', row.get('QuantitÓ'))
 
             cur.execute("""
                 INSERT INTO verifica_ip_portal (
@@ -319,19 +325,16 @@ class DataImporter:
                     numero_fattura, data_fattura, file_origine
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
-                impianto_id, 'CARTA_PETROLIFERA', row.get('Gestore'), pv,
-                row.get('Data\noperazione'), row.get('Ora\noperazione'), row.get('Circuito'),
-                row.get('Cod. Prod.'), row.get('Prodotto'), row.get('Riferimento\nScontrino'),
-                row.get('Quantità'), row.get('Prezzo'), row.get('Importo'), row.get('Segno'),
-                row.get('Numero Fattura'), row.get('Data Fattura'), os.path.basename(file_path)
+                impianto_id, 'CARTA_PETROLIFERA', self._safe_val(row.get('Gestore')), pv_code,
+                self._safe_val(row.get('Data\noperazione')), self._safe_val(row.get('Ora\noperazione')), self._safe_val(row.get('Circuito')),
+                self._safe_val(row.get('Cod. Prod.')), self._safe_val(row.get('Prodotto')), self._safe_val(row.get('Riferimento\nScontrino')),
+                self._safe_val(quantita), self._safe_val(row.get('Prezzo')), self._safe_val(row.get('Importo')), self._safe_val(row.get('Segno')),
+                self._safe_val(row.get('Numero Fattura')), self._safe_val(row.get('Data Fattura')), os.path.basename(file_path)
             ))
         conn.commit()
 
     def _import_ip_buoni(self, conn, file_path):
-        df = pd.read_excel(file_path, header=0)
-        if len(df) > 0:
-            df.columns = df.iloc[0]
-            df = df.iloc[1:]
+        df = pd.read_excel(file_path, header=1)
         df = df.where(pd.notna(df), None)
         
         cur = conn.cursor()
@@ -351,12 +354,12 @@ class DataImporter:
                     terminale, auth_code, flusso, file_origine
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
-                impianto_id, 'BUONO', row.get('Gestore'), esercente,
-                row.get('Descrizione esercente'), row.get('Punto vendita'), row.get('Data operazione'),
-                row.get('Ora operazione'), row.get('Prodotto'), row.get('Quantita'),
-                row.get('Prezzo unit.'), row.get('Importo'), row.get('Pan'),
-                row.get('Serial number'), row.get('Terminale'), row.get('Auth code'),
-                row.get('Flusso'), os.path.basename(file_path)
+                impianto_id, 'BUONO', self._safe_val(row.get('Gestore')), self._safe_val(esercente),
+                self._safe_val(row.get('Descrizione esercente')), self._safe_val(row.get('Punto vendita')), self._safe_val(row.get('Data operazione')),
+                self._safe_val(row.get('Ora operazione')), self._safe_val(row.get('Prodotto')), self._safe_val(row.get('Quantita')),
+                self._safe_val(row.get('Prezzo unit.')), self._safe_val(row.get('Importo')), self._safe_val(row.get('Pan')),
+                self._safe_val(row.get('Serial number')), self._safe_val(row.get('Terminale')), self._safe_val(row.get('Auth code')),
+                self._safe_val(row.get('Flusso')), os.path.basename(file_path)
             ))
         conn.commit()
 
@@ -384,9 +387,9 @@ class DataImporter:
                     file_origine
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
-                impianto_id, row.get('id transazione'), row.get('data transazione'),
-                row.get('negozio'), codice_negozio, importo_totale, commissioni,
-                importo_totale - commissioni, row.get('tipo transazione'),
-                row.get('codice transazione'), row.get('id gruppo'), os.path.basename(file_path)
+                impianto_id, self._safe_val(row.get('id transazione')), self._safe_val(row.get('data transazione')),
+                self._safe_val(row.get('negozio')), self._safe_val(codice_negozio), importo_totale, commissioni,
+                importo_totale - commissioni, self._safe_val(row.get('tipo transazione')),
+                self._safe_val(row.get('codice transazione')), self._safe_val(row.get('id gruppo')), os.path.basename(file_path)
             ))
         conn.commit()
