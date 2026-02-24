@@ -16,7 +16,10 @@ class Database:
         self.schema_path = self.root_path / "db" / self.SCHEMA_FILE
 
     def get_connection(self):
-        return sqlite3.connect(self.db_path)
+        conn = sqlite3.connect(self.db_path, timeout=30.0)
+        # Enable Write-Ahead Logging for better concurrency and fewer locks
+        conn.execute('PRAGMA journal_mode=WAL;')
+        return conn
 
     def initialize(self):
         if not self.schema_path.exists():

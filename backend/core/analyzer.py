@@ -66,13 +66,13 @@ class Analyzer:
                     crediti_records
                 )
                 
-                # Save to DB
+                # Save to DB and commit immediately to release locks
                 self._save_result(conn, res_dict, impianto_id)
+                conn.commit()
                 results.append(res_dict)
 
             # ── Pass 2: Multi-day contanti reconciliation per impianto ──
             self._run_contanti_multi_giorno(conn, progress_callback)
-
             conn.commit()
             
             if progress_callback:
@@ -158,6 +158,9 @@ class Analyzer:
                     ris.match_info.get('tipo_match', '') if ris.match_info else None,
                     ris.note
                 ))
+            
+            # Release DB lock after finishing an implant
+            conn.commit()
 
 
     def _fetch_fortech(self, conn, date_str, impianto_id):

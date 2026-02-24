@@ -141,7 +141,7 @@ def riconcilia_contanti(
     
     # Converti data riferimento
     try:
-        data_ref = datetime.strptime(data_riferimento, '%Y-%m-%d')
+        data_ref = datetime.strptime(data_riferimento[:10], '%Y-%m-%d')
     except ValueError:
         return RisultatoRiconciliazione(
             categoria='contanti',
@@ -249,7 +249,7 @@ def riconcilia_contanti_multi_giorno(
     # Ordina per data e crea struttura di lavoro
     giorni_fortech = []
     for ft in fortech_multi:
-        data_str = ft.get('data_contabile', '')
+        data_str = ft.get('data_contabile', '')[:10]
         teorico = ft.get('incasso_contanti_teorico', 0) or 0
         if data_str and teorico > 0:  # Ignora giorni senza contanti
             giorni_fortech.append({
@@ -360,13 +360,13 @@ def riconcilia_contanti_multi_giorno(
             if match_trovato:
                 break
             
-            # Prova tutte le combinazioni di n giorni liberi
-            for combo in combinations(range(len(giorni_liberi)), n):
-                giorni_combo = [giorni_liberi[i] for i in combo]
+            # Prova solo finestre contigue di n giorni liberi
+            for i in range(len(giorni_liberi) - n + 1):
+                giorni_combo = giorni_liberi[i : i+n]
                 
                 # Verifica che i giorni siano "ragionevolmente consecutivi"
                 # (max 1 giorno di gap tra il primo e l'ultimo)
-                date_combo = sorted([g['data'] for g in giorni_combo])
+                date_combo = [g['data'] for g in giorni_combo]
                 if not _sono_date_vicine(date_combo, max_gap=2):
                     continue
                 
@@ -455,7 +455,7 @@ def riconcilia_contanti_multi_giorno(
     # Aggiungi anche i giorni Fortech con teorico = 0 (non inclusi nell'algoritmo)
     date_processate = {g['data'] for g in giorni_fortech}
     for ft in fortech_multi:
-        data_str = ft.get('data_contabile', '')
+        data_str = ft.get('data_contabile', '')[:10]
         teorico = ft.get('incasso_contanti_teorico', 0) or 0
         if data_str and data_str not in date_processate:
             risultati.append(RisultatoRiconciliazione(
@@ -705,7 +705,7 @@ def riconcilia_giornata(
     Returns:
         Dict con risultati per ogni categoria e stato globale
     """
-    data = fortech_data.get('data_contabile', '')
+    data = fortech_data.get('data_contabile', '')[:10]
     
     # Calcola totali reali dalle fonti esterne
     numia_totale = sum(r.get('importo', 0) or 0 for r in numia_records)
