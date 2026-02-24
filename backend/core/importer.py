@@ -89,32 +89,89 @@ class DataImporter:
     # --- Import Functions (Adapted) ---
 
     def _import_fortech(self, conn, file_path):
-        df = pd.read_excel(file_path)
-        df = df.where(pd.notna(df), None)
+        # ── Read both sheets from the Fortech Excel ──
+        xls = pd.ExcelFile(file_path)
+        sheet_names = [s.lower() for s in xls.sheet_names]
+        
+        # Sheet "Vendite" (or first sheet) = corrispettivi, volumi, fatture
+        df_vendite = pd.read_excel(xls, sheet_name=0)
+        df_vendite = df_vendite.where(pd.notna(df_vendite), None)
+        
+        # Sheet "Incassi" = suddivisione per metodo di pagamento
+        df_incassi = None
+        incassi_map = {}  # key: (codice_pv, data_contabile) → incassi row
+        
+        if len(xls.sheet_names) > 1:
+            for idx, sn in enumerate(xls.sheet_names):
+                if sn.lower() in ('incassi', 'incasso', 'pagamenti'):
+                    df_incassi = pd.read_excel(xls, sheet_name=idx)
+                    df_incassi = df_incassi.where(pd.notna(df_incassi), None)
+                    break
+            if df_incassi is None:
+                # Fallback: try second sheet
+                df_incassi = pd.read_excel(xls, sheet_name=1)
+                df_incassi = df_incassi.where(pd.notna(df_incassi), None)
+        
+        # Build lookup map from Incassi sheet
+        if df_incassi is not None:
+            for _, row in df_incassi.iterrows():
+                key = (str(row.get('CodicePV', '')), str(row.get('DataContabile', '')))
+                
+                # Carte bancarie = somma di tutti i pagamenti elettronici bancari
+                carte_bancarie = sum(filter(None, [
+                    row.get('CARTA CREDITO GENERICA', 0) or 0,
+                    row.get('PAGOBANCOMAT', 0) or 0,
+                    row.get('AMEX', 0) or 0,
+                    row.get('BANCOMAT GESTORE', 0) or 0,
+                    row.get('CARTA CREDITO GESTORE', 0) or 0,
+                ]))
+                
+                # Carte petrolifere = somma di tutti i network petroliferi
+                carte_petrolifere = sum(filter(None, [
+                    row.get('CARTAPETROLIFERA', 0) or 0,
+                    row.get('DKV', 0) or 0,
+                    row.get('UTA', 0) or 0,
+                    row.get('CARTAMAXIMA', 0) or 0,
+                ]))
+                
+                incassi_map[key] = {
+                    'contanti': row.get('CONTANTI', 0) or 0,
+                    'carte_bancarie': carte_bancarie,
+                    'carte_petrolifere': carte_petrolifere,
+                    'satispay': row.get('PAGAMENTIINNOVATIVI', 0) or 0,
+                    'credito_finemese': row.get('CLIENTI CON FATTURA FINE MESE', 0) or 0,
+                    'buoni': row.get('BUONI', 0) or 0,
+                }
+        
+        # ── Import rows ──
         righe_importate = 0
         cur = conn.cursor()
         
-        for _, row in df.iterrows():
+        for _, row in df_vendite.iterrows():
             codice_pv = str(row.get('CodicePV', ''))
             impianto_id = self._ottieni_impianto_id(conn, codice_pv)
             if not impianto_id: continue
                 
-            # Calcola i campi teorici per la riconciliazione
+            # Valori dal foglio Vendite
             corrispettivo_totale = row.get('Corrispettivo Totale', 0) or 0
             fatture_post = row.get('Fatture Postpagate Totale', 0) or 0
             fatture_pre = row.get('Fatture Prepagate Totale', 0) or 0
             buoni_tot = row.get('Buoni Totale', 0) or 0
             
-            # Leggi i campi calcolati se presenti nell'Excel, altrimenti calcola
-            incasso_carte_bancarie = row.get('Incasso Carte Bancarie Teorico', None)
-            incasso_satispay = row.get('Incasso Satispay Teorico', None)
-            incasso_credito = row.get('Incasso Credito Finemese Teorico', None)
-            incasso_contanti = row.get('Incasso Contanti Teorico', None)
+            # Valori teorici dal foglio Incassi (se disponibile)
+            data_contabile = str(row.get('DataContabile', ''))
+            key = (codice_pv, data_contabile)
+            inc = incassi_map.get(key, {})
             
-            # Se non presenti nell'Excel, usa il campo contanti residuo come fallback
-            # Fortech calcola: Totale - Elettronico = Contanti
-            if incasso_contanti is None:
-                incasso_contanti = row.get('Contanti Teorico', 0) or 0
+            incasso_contanti = inc.get('contanti', 0)
+            incasso_carte_bancarie = inc.get('carte_bancarie', 0)
+            incasso_carte_petrolifere = inc.get('carte_petrolifere', None)
+            incasso_satispay = inc.get('satispay', 0)
+            incasso_credito = inc.get('credito_finemese', 0)
+            
+            # Se il foglio Incassi non è disponibile, fallback al calcolo
+            if not inc and corrispettivo_totale > 0:
+                incasso_contanti = corrispettivo_totale - fatture_post - fatture_pre - buoni_tot
             
             cur.execute("""
                 INSERT INTO import_fortech_master (
@@ -124,10 +181,11 @@ class DataImporter:
                     volume_diesel_prepay, importo_diesel_prepay, prezzo_diesel_prepay,
                     fatture_postpagate_totale, fatture_prepagate_totale, 
                     fatture_immediate_totale, fatture_differite_totale, buoni_totale,
-                    incasso_carte_bancarie_teorico, incasso_satispay_teorico,
-                    incasso_credito_finemese_teorico, incasso_contanti_teorico,
+                    incasso_carte_bancarie_teorico, incasso_carte_petrolifere_teorico,
+                    incasso_satispay_teorico, incasso_credito_finemese_teorico,
+                    incasso_contanti_teorico,
                     file_origine
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 impianto_id, codice_pv, row.get('DataContabile'), row.get('DataInizio'),
                 row.get('DataFine'), row.get('StatoGiornata'), corrispettivo_totale,
@@ -137,8 +195,9 @@ class DataImporter:
                 fatture_post, fatture_pre,
                 row.get('Fatture Immediate Totale', 0), row.get('Fatture Differite Totale', 0),
                 buoni_tot,
-                incasso_carte_bancarie, incasso_satispay,
-                incasso_credito, incasso_contanti,
+                incasso_carte_bancarie, incasso_carte_petrolifere,
+                incasso_satispay, incasso_credito,
+                incasso_contanti,
                 os.path.basename(file_path)
             ))
             righe_importate += 1
