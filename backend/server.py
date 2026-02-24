@@ -2,6 +2,7 @@
 Calor Systems — Web Dashboard Server
 Flask server che legge il database SQLite e serve una dashboard web.
 Supporta caricamento file Excel per importazione e analisi.
+Deployable su Vercel come serverless function.
 """
 
 import sqlite3
@@ -29,16 +30,45 @@ from dotenv import load_dotenv
 load_dotenv(".env.local")
 load_dotenv()
 
-DB_PATH = os.path.join(PROJECT_ROOT, "db", "calor_systems.db")
+# ── Vercel Environment Detection ──
+IS_VERCEL = os.environ.get('VERCEL', '') == '1'
+
+if IS_VERCEL:
+    # Vercel serverless: use /tmp for writable SQLite
+    DB_PATH = "/tmp/calor_systems.db"
+    SCHEMA_SRC = os.path.join(PROJECT_ROOT, "db", "calor_systems_schema.sql")
+    
+    # Auto-initialize DB on cold start
+    if not os.path.exists(DB_PATH):
+        conn = sqlite3.connect(DB_PATH)
+        try:
+            if os.path.exists(SCHEMA_SRC):
+                with open(SCHEMA_SRC, 'r', encoding='utf-8') as f:
+                    conn.executescript(f.read())
+                conn.commit()
+                print(f"[Vercel] Database initialized at {DB_PATH}")
+            else:
+                print(f"[Vercel] Schema not found at {SCHEMA_SRC}")
+        except Exception as e:
+            print(f"[Vercel] DB init error: {e}")
+        finally:
+            conn.close()
+else:
+    # Local development
+    DB_PATH = os.path.join(PROJECT_ROOT, "db", "calor_systems.db")
 
 app = Flask(__name__, 
             template_folder="../frontend/templates",
             static_folder="../frontend/static")
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 # 16MB max upload
 
+
 def get_readonly_db():
     """Get a read-only database connection for queries."""
-    conn = sqlite3.connect(f"file:{DB_PATH}?mode=ro", uri=True)
+    if IS_VERCEL:
+        conn = sqlite3.connect(DB_PATH)
+    else:
+        conn = sqlite3.connect(f"file:{DB_PATH}?mode=ro", uri=True)
     conn.row_factory = sqlite3.Row
     return conn
 
