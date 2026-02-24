@@ -1,5 +1,4 @@
 {
-    "version": 2,
     "builds": [
         {
             "src": "api/index.py",
@@ -9,18 +8,10 @@
             }
         }
     ],
-    "rewrites": [
+    "routes": [
         {
-            "source": "/static/(.*)",
-            "destination": "/api/index"
-        },
-        {
-            "source": "/api/(.*)",
-            "destination": "/api/index"
-        },
-        {
-            "source": "/(.*)",
-            "destination": "/api/index"
+            "src": "/(.*)",
+            "dest": "api/index.py"
         }
     ]
 }
