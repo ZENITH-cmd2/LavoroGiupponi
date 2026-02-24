@@ -1,0 +1,22 @@
+=== SHEETS: ['Vendite', 'Incassi']
+
+Sheet 0: 28 rows x 67 cols
+
+=== FIRST ROW (non-null values) ===
+  CodicePV: 43809
+  DataContabile: 2026-01-01 00:00:00
+  DataInizio: 2025-12-31 23:59:59
+  DataFine: 2026-01-01 23:59:59
+  StatoGiornata: Rettificata
+  Corrispettivo Totale: 2156.86
+  CorrispettivoVerde: 1616.95
+  PrezzoVerdePrepay: 1.739
+  PrezzoSIVAVerdePrepay: 1.425
+  VolumeVerdePrepay: 929.78
+  ImportoVerdePrepay: 1616.95
+  CorrispettivoDiesel: 539.91
+  PrezzoDieselPrepay: 1.699
+  PrezzoSIVADieselPrepay: 1.393
+  VolumeDieselPrepay: 393.46
+  ImportoDieselPrepay: 668.49
+  Fatture Immediate Totale: 30.33

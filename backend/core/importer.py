@@ -9,6 +9,20 @@ class DataImporter:
     def __init__(self, db_instance: Database):
         self.db = db_instance
 
+    @staticmethod
+    def _safe_val(val):
+        """Convert pandas NaT/NaN/None to Python None for SQLite."""
+        if val is None:
+            return None
+        if isinstance(val, float) and pd.isna(val):
+            return None
+        if pd.isna(val):
+            return None
+        # Convert Timestamp to ISO string
+        if isinstance(val, pd.Timestamp):
+            return val.isoformat()
+        return val
+
     def import_files(self, file_paths, progress_callback=None):
         """
         Imports a list of files.
@@ -223,16 +237,28 @@ class DataImporter:
                     file_origine
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
-                impianto_id, row.get('Registrazione//Data'), row.get('Documento//Data'), row.get('Scadenza'),
-                row.get('Documento//Tipo'), row.get('Documento//Numero'), row.get('Registrazione//Tipo'),
-                row.get('Registrazione//Numero'), importo, row.get('Segno'), row.get('Descrizione'),
-                row.get('Centro di Costo'), row.get('Stato'), row.get('Partita'), os.path.basename(file_path)
+                impianto_id,
+                self._safe_val(row.get('Registrazione//Data')),
+                self._safe_val(row.get('Documento//Data')),
+                self._safe_val(row.get('Scadenza')),
+                self._safe_val(row.get('Documento//Tipo')),
+                self._safe_val(row.get('Documento//Numero')),
+                self._safe_val(row.get('Registrazione//Tipo')),
+                self._safe_val(row.get('Registrazione//Numero')),
+                importo,
+                self._safe_val(row.get('Segno')),
+                self._safe_val(row.get('Descrizione')),
+                self._safe_val(row.get('Centro di Costo')),
+                self._safe_val(row.get('Stato')),
+                self._safe_val(row.get('Partita')),
+                os.path.basename(file_path)
             ))
             righe_importate += 1
         conn.commit()
 
     def _import_numia(self, conn, file_path):
-        df = pd.read_excel(file_path, header=1)
+        # Numia file: row 0 = empty, row 1 = title text, row 2 = actual headers
+        df = pd.read_excel(file_path, header=2)
         df = df.where(pd.notna(df), None)
         righe_importate = 0
         impianto_id = self._ottieni_impianto_id(conn, "43809")
@@ -251,11 +277,21 @@ class DataImporter:
                     id_transazione_numia, file_origine
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
-                impianto_id, row.get('Data e ora'), importo, row.get('Codice autorizzazione'),
-                row.get('Numero carta'), row.get('Circuito'), row.get('Tipo transazione'),
-                row.get('Stato operazione'), row.get('Punto vendita'), row.get('ID Punto vendita'),
-                row.get('MID'), row.get('ID Terminale / TML'), row.get('Alias Terminale'),
-                row.get('ID Transazione'), os.path.basename(file_path)
+                impianto_id,
+                self._safe_val(row.get('Data e ora')),
+                importo,
+                self._safe_val(row.get('Codice autorizzazione')),
+                self._safe_val(row.get('Numero carta')),
+                self._safe_val(row.get('Circuito')),
+                self._safe_val(row.get('Tipo transazione')),
+                self._safe_val(row.get('Stato operazione')),
+                self._safe_val(row.get('Punto vendita')),
+                self._safe_val(row.get('ID Punto vendita')),
+                self._safe_val(row.get('MID')),
+                self._safe_val(row.get('ID Terminale / TML')),
+                self._safe_val(row.get('Alias Terminale')),
+                self._safe_val(row.get('ID Transazione')),
+                os.path.basename(file_path)
             ))
             righe_importate += 1
         conn.commit()

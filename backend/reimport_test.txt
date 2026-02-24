@@ -1,0 +1,6 @@
+=== AFTER RE-IMPORT ===
+  2026-01-28T00:00:00: contanti=515.22, carte=3406.17, petrol=1540.9900000000002, satispay=5, totale=5084.81
+  2026-01-27T00:00:00: contanti=978.41, carte=3139.17, petrol=1186.44, satispay=11.26, totale=4983.12
+  2026-01-26T00:00:00: contanti=695.7, carte=3695.7400000000002, petrol=1876.83, satispay=37.57, totale=5771.18
+  2026-01-25T00:00:00: contanti=685, carte=3080.16, petrol=399.7, satispay=17.82, totale=4157.98
+  2026-01-24T00:00:00: contanti=607.97, carte=3513.8300000000004, petrol=1025.59, satispay=30, totale=5035.82

@@ -1,0 +1,4 @@
+Sheets: ['Transazioni']
+Sheet: Transazioni - 128 rows x 17 cols
+  Columns: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 15', 'Unnamed: 16']
+  First row: {'Unnamed: 0': 'Lista transazioni dal 15/01/26 00:00:00 al 15/01/26 23:59:59', 'Unnamed: 1': nan, 'Unnamed: 2': nan, 'Unnamed: 3': nan, 'Unnamed: 4': nan, 'Unnamed: 5': nan, 'Unnamed: 6': nan, 'Unnamed: 7': nan, 'Unnamed: 8': nan, 'Unnamed: 9': nan, 'Unnamed: 10': nan, 'Unnamed: 11': nan, 'Unnamed: 12': nan, 'Unnamed: 13': nan, 'Unnamed: 14': nan, 'Unnamed: 15': nan, 'Unnamed: 16': nan}

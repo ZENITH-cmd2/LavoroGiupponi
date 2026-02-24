@@ -1,0 +1,9 @@
+=== FIRST 8 ROWS ===
+  Row 0: []
+  Row 1: ['Lista transazioni dal 15/01/26 00:00:00 al 15/01/26 23:59:59']
+  Row 2: ['Data e ora', 'Codice autorizzazione', 'Numero carta', 'Importo', 'Circuito']
+  Row 3: ['2026-01-15 23:39:24', '929023', '535400xxxxxxxxx5542', '17.01', 'MASTERCARD']
+  Row 4: ['2026-01-15 23:36:46', 'NT5WCS', '535561xxxxxxxxx2361', '50.05', 'MASTERCARD']
+  Row 5: ['2026-01-15 23:31:33', '060617', '306920xxxxxxxxx5877', '50.16', 'PAGOBANCOMAT']
+  Row 6: ['2026-01-15 23:15:59', '575755', '379316xxxxxxxxx8232', '7.57', 'AMERICAN EXPRESS']
+  Row 7: ['2026-01-15 22:59:37', '582710', '537572xxxxxxxxx4406', '5', 'MASTERCARD']

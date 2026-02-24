@@ -1,0 +1,64 @@
+=== Numia (Carte Bancarie) ===
+
+=== Satispay ===
+  [0] id transazione
+  [1] data transazione
+  [2] negozio
+  [3] codice negozio
+  [4] importo totale
+  [5] totale commissioni
+  [6] tipo transazione
+  [7] codice transazione
+  [8] id gruppo
+
+=== AS400 (Contanti) ===
+  [0] Opz
+  [1] Stato
+  [2] Note m.
+  [3] Documento//Data
+  [4] Documento//Tipo
+  [5] Documento//Numero
+  [6] Registrazione//Data
+  [7] Registrazione//Tipo
+  [8] Registrazione//Numero
+  [9] Descrizione
+  [10] Scadenza
+  [11] Centro di Costo
+  [12] Importo
+  [13] Segno
+  [14] Val
+  [15] Importo val.
+  [16] Stato.1
+  [17] Pagam.
+  [18] Tipo pag.
+  [19] N. rata
+  [20] Grado soll.
+  [21] Grado da soll.
+  [22] Legale
+  [23] C/Costo
+  [24] Descrizione 2
+  [25] Data Val.
+  [26] Commessa
+  [27] Cambio
+  [28] -
+  [29] Linea
+  [30] Agente
+  [31] Assegno
+  [32] Dt.sol.
+  [33] Nr.sol.
+  [34] Blocco pagamenti
+  [35] Codice CUP
+  [36] Codice Cig
+  [37] Stato invio
+  [38] Partita
+  [39] Eff.def.
+  [40] Numero effetto
+  [41] Data effetto
+  [42] Nro documento
+  [43] Cee
+  [44] Allegati
+  [45] -.1
+
+=== IP Carte ===
+  [0] TRANSAZIONI FUELCARD RIMBORSATE
+

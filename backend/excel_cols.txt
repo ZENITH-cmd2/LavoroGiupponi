@@ -1,0 +1,68 @@
+COLUMNS:
+  [0] CodicePV
+  [1] DataContabile
+  [2] DataInizio
+  [3] DataFine
+  [4] StatoGiornata
+  [5] Corrispettivo Totale
+  [6] CorrispettivoVerde
+  [7] PrezzoVerdeFai da te
+  [8] PrezzoSIVAVerdeFai da te
+  [9] VolumeVerdeFai da te
+  [10] ImportoVerdeFai da te
+  [11] PrezzoVerdeServito
+  [12] PrezzoSIVAVerdeServito
+  [13] VolumeVerdeServito
+  [14] ImportoVerdeServito
+  [15] PrezzoVerdePrepay
+  [16] PrezzoSIVAVerdePrepay
+  [17] VolumeVerdePrepay
+  [18] ImportoVerdePrepay
+  [19] CorrispettivoDiesel
+  [20] PrezzoDieselFai da te
+  [21] PrezzoSIVADieselFai da te
+  [22] VolumeDieselFai da te
+  [23] ImportoDieselFai da te
+  [24] PrezzoDieselServito
+  [25] PrezzoSIVADieselServito
+  [26] VolumeDieselServito
+  [27] ImportoDieselServito
+  [28] PrezzoDieselPrepay
+  [29] PrezzoSIVADieselPrepay
+  [30] VolumeDieselPrepay
+  [31] ImportoDieselPrepay
+  [32] CorrispettivoAdBlue Confezione
+  [33] PrezzoAdBlue ConfezioneServito
+  [34] PrezzoSIVAAdBlue ConfezioneServito
+  [35] QuantitaAdBlue ConfezioneServito
+  [36] ImportoAdBlue ConfezioneServito
+  [37] CorrispettivoLIQUIDO RADIATORE
+  [38] PrezzoLIQUIDO RADIATOREServito
+  [39] PrezzoSIVALIQUIDO RADIATOREServito
+  [40] QuantitaLIQUIDO RADIATOREServito
+  [41] ImportoLIQUIDO RADIATOREServito
+  [42] CorrispettivoLubrificanti
+  [43] PrezzoLubrificantiServito
+  [44] PrezzoSIVALubrificantiServito
+  [45] QuantitaLubrificantiServito
+  [46] ImportoLubrificantiServito
+  [47] CorrispettivoADBLUE
+  [48] PrezzoADBLUEServito
+  [49] PrezzoSIVAADBLUEServito
+  [50] QuantitaADBLUEServito
+  [51] ImportoADBLUEServito
+  [52] CorrispettivoLAVAVETRI
+  [53] PrezzoLAVAVETRIServito
+  [54] PrezzoSIVALAVAVETRIServito
+  [55] QuantitaLAVAVETRIServito
+  [56] ImportoLAVAVETRIServito
+  [57] CorrispettivoLUBRIFICANTI
+  [58] PrezzoLUBRIFICANTIServito
+  [59] PrezzoSIVALUBRIFICANTIServito
+  [60] QuantitaLUBRIFICANTIServito
+  [61] ImportoLUBRIFICANTIServito
+  [62] Fatture Postpagate Totale
+  [63] Fatture Prepagate Totale
+  [64] Fatture Immediate Totale
+  [65] Fatture Differite Totale
+  [66] Buoni Totale

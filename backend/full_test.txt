@@ -1,0 +1,11 @@
+Error importing ../Dati_excel/1_CONTROLLO CONTANTI DA AS400_GIALLO.xlsx: Error binding parameter 2: type 'NaTType' is not supported
+Analysis complete: 28 results
+Non-zero theoretical: 78
+  carte_bancarie: teorico=3406.17, reale=0, diff=3406.17, stato=ANOMALIA_GRAVE
+  satispay: teorico=5, reale=0, diff=5, stato=ANOMALIA_GRAVE
+  carte_bancarie: teorico=3139.17, reale=0, diff=3139.17, stato=ANOMALIA_GRAVE
+  satispay: teorico=11.26, reale=0, diff=11.26, stato=ANOMALIA_GRAVE
+  carte_bancarie: teorico=3695.7400000000002, reale=0, diff=3695.74, stato=ANOMALIA_GRAVE
+  satispay: teorico=37.57, reale=0, diff=37.57, stato=ANOMALIA_GRAVE
+  crediti: teorico=81, reale=0, diff=81, stato=ANOMALIA_GRAVE
+  carte_bancarie: teorico=3080.16, reale=0, diff=3080.16, stato=ANOMALIA_GRAVE

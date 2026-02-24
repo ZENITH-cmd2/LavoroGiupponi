@@ -1,0 +1,23 @@
+import_fortech_master: 28
+verifica_contanti_as400: 217
+verifica_numia: 126
+verifica_ip_portal: 149
+verifica_satispay: 6
+Numia dates: [None, '2026-01-15T00:03:23', '2026-01-15T00:20:46']
+Fortech dates: ['2026-01-01T00:00:00', '2026-01-02T00:00:00', '2026-01-03T00:00:00']
+2026-01-28 carte_bancarie       teo= 3406.17 reale=    0.00 diff= 3406.17 ANOMALIA_GRAVE
+2026-01-28 contanti             teo=  515.22 reale=    0.00 diff=  515.22 IN_ATTESA
+2026-01-28 satispay             teo=    5.00 reale=    0.00 diff=    5.00 ANOMALIA_GRAVE
+2026-01-27 carte_bancarie       teo= 3139.17 reale=    0.00 diff= 3139.17 ANOMALIA_GRAVE
+2026-01-27 contanti             teo=  978.41 reale=  978.50 diff=   -0.09 QUADRATO_ARROT
+2026-01-27 satispay             teo=   11.26 reale=    0.00 diff=   11.26 ANOMALIA_GRAVE
+2026-01-26 carte_bancarie       teo= 3695.74 reale=    0.00 diff= 3695.74 ANOMALIA_GRAVE
+2026-01-26 contanti             teo=  695.70 reale=  696.00 diff=   -0.30 QUADRATO_ARROT
+2026-01-26 crediti              teo=   81.00 reale=    0.00 diff=   81.00 ANOMALIA_GRAVE
+2026-01-26 satispay             teo=   37.57 reale=    0.00 diff=   37.57 ANOMALIA_GRAVE
+2026-01-25 carte_bancarie       teo= 3080.16 reale=    0.00 diff= 3080.16 ANOMALIA_GRAVE
+2026-01-25 contanti             teo=  685.00 reale=  685.00 diff=    0.00 QUADRATO
+2026-01-25 satispay             teo=   17.82 reale=    0.00 diff=   17.82 ANOMALIA_GRAVE
+2026-01-24 carte_bancarie       teo= 3513.83 reale=    0.00 diff= 3513.83 ANOMALIA_GRAVE
+2026-01-24 contanti             teo=  607.97 reale=  608.00 diff=   -0.03 QUADRATO_ARROT
+DONE

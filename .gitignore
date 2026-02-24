@@ -35,3 +35,5 @@ Dati_excel/
 
 # Gemini
 .gemini/
+.vercel
+.env*.local
